@@ -1,0 +1,24 @@
+/* 表の縦線を表示する */
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+/* 表のセル内の余白 */
+th,
+td {
+  padding: 5px;
+  text-align: left;
+}
+
+/* ヘッダの背景色 */
+th {
+  background-color: #f0f0f0;
+}
+
+/* 改ページ */
+.page-break {
+  page-break-before: always;
+}
