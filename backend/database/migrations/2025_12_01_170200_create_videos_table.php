@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
             $table->string('youtube_id',20)->unique();
-            $table->unsignedBigInteger('artist_id');
+            $table->foreignId('artist_id')->constrained('artists')->cascadeOnDelete();
+            // 複合UNIQUE制約(同じアーティストの同じ動画が重複登録されない)
+            $table->unique(['youtube_id', 'artist_id']);
             $table->string('title');
             $table->text('description');
             $table->string('channel_id', 50);

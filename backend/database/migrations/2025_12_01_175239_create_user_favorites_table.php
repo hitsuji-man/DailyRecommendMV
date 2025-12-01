@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('video_id')->constrained('videos')->cascadeOnDelete();
-            // 複合 UNIQUE 制約
+            // 複合UNIQUE制約(同じユーザーのお気に入りした動画は重複登録されない)
             $table->unique(['user_id', 'video_id']);
             $table->timestamp('created_at')->useCurrent();
         });
