@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('channel_id', 50);
             $table->string('channel_title');
             $table->string('thumbnail_url')->nullable();
