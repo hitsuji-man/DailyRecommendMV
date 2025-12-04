@@ -13,13 +13,17 @@ class VideoResource extends JsonResource
             'videoId'      => $this->videoId ?? $this['videoId']
                                 ?? $this->resource['id']
                                 ?? $this->resource['videoId'] ?? null,
-            'title'        => $this->title ?? $this['title']
+            'title'        => $this->title
+                                ?? $this['title']
                                 ?? $this->resource['snippet']['title'] ?? null,
-            'description'  => $this->description ?? $this['description']
+            'description'  => $this->description
+                                ?? $this['description']
                                 ?? $this->resource['snippet']['description'] ?? null,
-            'channelId'    => $this->channelId ?? $this['channelId']
+            'channelId'    => $this->channelId
+                                ?? $this['channelId']
                                 ?? $this->resource['snippet']['channelId'] ?? null,
-            'channelTitle' => $this->channelTitle ?? $this['channelTitle']
+            'channelTitle' => $this->channelTitle
+                                ?? $this['channelTitle']
                                 ?? $this->resource['snippet']['channelTitle'] ?? null,
 
             'thumbnail'    => $this->thumbnail
