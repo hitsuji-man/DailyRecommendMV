@@ -149,18 +149,28 @@ class YouTubeService
     }
 
     /**
-     * トレンド35件 + PlaylistItem15件 = 合計50件の動画のリスト
+     * トレンド30件 + PlaylistItem20件 = 合計50件の動画のリスト
      * @return array
      */
     public function buildMixedDailyList(): array {
         try {
-            $trending = $this->fetchTrendingMusic(50);
+            $trending = $this->fetchTrendingMusic(30);
             $playlistItems = $this->fetchPlaylistItems(50);
 
-            $trendingLimited=array_slice($trending, 0, 35);
-            $playlistItemsLimited=array_slice($playlistItems, 0, 15);
+            // sourceTypeを付与: 'trend' or 'playlist'
+            $trending = array_map(function ($item) {
+                $item['sourceType'] = 'trend';
+                return $item;
+            }, $trending);
 
-            return array_merge($trendingLimited, $playlistItemsLimited);
+            $playlistItems = array_map(function($item) {
+                $item['sourceType'] = 'playlist';
+                return $item;
+            }, $playlistItems);
+
+            $playlistItemsLimited=array_slice($playlistItems, 0, 20);
+
+            return array_merge($trending, $playlistItemsLimited);
         } catch (\Exception $error) {
             Log::error('YouTube API Merge Exception', [
                 'message' => $error->getMessage(),
