@@ -26,6 +26,17 @@ class VideoController extends Controller
     }
 
     /**
+     * トレンド動画のAPIレスポンスを返す
+     * @return AnonymousResourceCollection
+     */
+    public function getTrendingMusicVideos(): AnonymousResourceCollection
+    {
+        $videos = $this->youtube->fetchTrendingMusic(30);
+        // ResourceでAPIレスポンス化
+        return VideoResource::collection($videos);
+    }
+
+    /**
      * トレンドとプレイリストがミックスされた合計50件の動画リストのAPIレスポンスを返す
      * @return AnonymousResourceCollection
      */

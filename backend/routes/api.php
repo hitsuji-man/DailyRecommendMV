@@ -9,5 +9,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function() {
+    Route::get('/videos/trending', [VideoController::class, 'getTrendingMusicVideos']);
     Route::get('/videos/mixed-daily', [VideoController::class, 'getMixedDailyList']);
 });
