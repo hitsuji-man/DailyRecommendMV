@@ -63,9 +63,10 @@ class YouTubeService
      * @return array
      */
     public function fetchPlaylistItems(int $maxResults = 50): array {
-                try {
+        try {
+            // 1. PlaylistItems API
             $response = Http::timeout(5)->get($this->baseUrl . 'playlistItems', [
-                'part'       => 'snippet,statistics',
+                'part'       => 'snippet,contentDetails',
                 'playlistId' => $this->playlistId,
                 'maxResults' => $maxResults,
                 'key'        => $this->apiKey,
@@ -79,8 +80,62 @@ class YouTubeService
                 return [];
             }
 
-            // JSON->PHPの連想配列のitemsキーを取り出し、それがnullまたは未定義なら空配列を返す
-            return $response->json()['items'] ?? [];
+            $items = $response->json()['items'] ?? [];
+            if (empty($items)) return [];
+
+            // 2. videoId抽出
+            $videoIds = collect($items)
+                ->map(fn($i) => $i['contentDetails']['videoId'] ?? null)
+                ->filter()
+                ->values()
+                ->toArray();
+
+            if(empty($videoIds)) return [];
+
+            // 3. Video API (statisticsを取得)
+            $resVideo = Http::timeout(5)->get($this->baseUrl . 'videos', [
+                'part' => 'snippet,statistics',
+                'id'   => implode(',', $videoIds),
+                'key'  => $this->apiKey,
+            ]);
+
+            if($resVideo->failed()) {
+                Log::warning('Youtube API Video failed (statistics)', [
+                    'status' => $resVideo->status(),
+                    'body'   => $resVideo->body(),
+                ]);
+                return [];
+            }
+
+            $videos = $resVideo->json()['items'] ?? [];
+
+            // 4. videoId => videoData形式に並べ替え
+            // keyBy('id')で各videoIdを辞書のキーとして保存
+            $videoMap = collect($videos)->keyBy('id');
+
+            // 5. 結合 (snippet + statistics + playlist snippet)
+            $merged = [];
+
+            foreach ($items as $item) {
+                $videoId = $item['contentDetails']['videoId'];
+                if (!isset($videoMap[$videoId])) continue;
+
+                $v = $videoMap[$videoId];
+
+                $merged[] = [
+                    'videoId'      => $videoId,
+                    'title'        => $v['snippet']['title'] ?? null,
+                    'description'  => $v['snippet']['description'] ?? null,
+                    'channelId'    => $v['snippet']['channelId'] ?? null,
+                    'channelTitle' => $v['snippet']['channelTitle'] ?? null,
+                    'thumbnail'    => $v['snippet']['thumbnails']['high'] ?? null,
+                    'publishedAt'  => $v['snippet']['publishedAt'] ?? null,
+                    'viewCount'    => $v['statistics']['viewCount'] ?? null,
+                    'likeCount'    => $v['statistics']['likeCount'] ?? null,
+                ];
+            }
+
+            return $merged;
 
         } catch (\Exception $error) {
             // グローバル名前空間 Exception を補足
