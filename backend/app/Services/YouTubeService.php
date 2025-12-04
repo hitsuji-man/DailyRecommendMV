@@ -58,7 +58,7 @@ class YouTubeService
     }
 
     /**
-     * PlaylistItemを取得(例: ミックスリスト)
+     * PlaylistItemを取得( プレイリスト「Catch Up Japan」 )
      * @param int $maxResults
      * @return array
      */
