@@ -84,13 +84,6 @@ class VideoController extends Controller
             ];
         }
 
-        // デバッグ用: 各配列のキーと値の型を表示
-        foreach ($upsertData as $i => $row) {
-            foreach ($row as $key => $value) {
-                echo "$i.$key => " . gettype($value) . PHP_EOL;
-            }
-        }
-
         // upsert 実行
         Video::upsert(
             $upsertData,
