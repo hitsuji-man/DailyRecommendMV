@@ -21,10 +21,10 @@ class YouTubeService
     /**
      * トレンド音楽動画を取得
      *
-     * @param int $maxResults
+     * @param int $maxResults=30(APIが合計30までしか返さない)
      * @return array
      */
-    public function fetchTrendingMusic(int $maxResults = 50): array {
+    public function fetchTrendingMusic(int $maxResults = 30): array {
         try {
             $response = Http::timeout(5)->get($this->baseUrl . 'videos', [
                 'part'       => 'snippet,statistics',
