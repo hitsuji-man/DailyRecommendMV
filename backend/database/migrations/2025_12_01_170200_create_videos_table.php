@@ -25,7 +25,7 @@ return new class extends Migration
             $table->dateTime('published_at')->nullable();
             $table->bigInteger('view_count')->nullable();
             $table->bigInteger('like_count')->nullable();
-            $table->enum('source_type',['trend', 'channel', 'mixed']);
+            $table->enum('source_type',['trend', 'playlist']);
             $table->timestamps();
         });
     }
