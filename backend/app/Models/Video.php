@@ -20,6 +20,10 @@ class Video extends Model
         'source_type',
     ];
 
+    protected $casts = [
+        'thumbnail_url' => 'array',
+    ];
+
     public function artist() {
         return $this->belongsTo(Artist::class);
     }

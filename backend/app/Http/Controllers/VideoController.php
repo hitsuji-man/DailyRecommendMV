@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
+use App\Models\Artist;
 use App\Models\Video;
 use App\Services\YouTubeService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 
 class VideoController extends Controller
 {
@@ -37,7 +41,7 @@ class VideoController extends Controller
     }
 
     /**
-     * トレンドとプレイリストがミックスされた合計50件の動画リストのAPIレスポンスを返す
+     * ミックス動画リスト(トレンド+プレイリストの動画合計50件)のAPIレスポンスを返す
      * @return AnonymousResourceCollection
      */
     public function getMixedDailyList(): AnonymousResourceCollection
@@ -45,15 +49,68 @@ class VideoController extends Controller
         $videos = $this->youtube->buildMixedDailyList();
         // ResourceでAPIレスポンス化
         return VideoResource::collection($videos);
+
+        // TODO
+        // Videosテーブルから動画($videos)を読み込む
     }
 
 
     /**
-     * Store a newly created resource in storage.
+     * ミックス動画リストを重複防止で保存する
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function storeMixedDailyList(Request $request): JsonResponse
     {
-        //
+        $rawVideos = $this->youtube->buildMixedDailyList();
+
+        $saveData = SaveVideoResource::collection($rawVideos)->toArray(request());
+
+        $upsertData = [];
+
+        foreach ($saveData as $v) {
+            // Artist 作成 or 取得
+            $artist = Artist::firstOrCreate(
+    ['channel_id' => $v['channel_id']],
+        ['channel_title' => $v['channel_title']],
+            );
+
+            $upsertData[] = [
+                ...$v,
+                'artist_id'     => $artist->id,
+                'published_at'  => isset($v['published_at'])
+                    ? \Carbon\Carbon::parse($v['published_at'])->format('Y-m-d H:i:s') : null,
+                'created_at'    => now()->format('Y-m-d H:i:s'),
+                'updated_at'    => now()->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        // デバッグ用: 各配列のキーと値の型を表示
+        foreach ($upsertData as $i => $row) {
+            foreach ($row as $key => $value) {
+                echo "$i.$key => " . gettype($value) . PHP_EOL;
+            }
+        }
+
+        // upsert 実行
+        Video::upsert(
+            $upsertData,
+            ['youtube_id'], // unique key
+            [
+                'artist_id',
+                'title',
+                'description',
+                'channel_id',
+                'channel_title',
+                'thumbnail_url',
+                'published_at',
+                'view_count',
+                'like_count',
+                'source_type',
+                'updated_at',
+            ]
+        );
+
+        return response()->json(['status' => 'success']);
     }
 
     /**
