@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('channel_id', 50);
             $table->string('channel_title');
-            $table->string('thumbnail_url');
+            $table->string('thumbnail');
             $table->dateTime('published_at')->nullable();
             $table->bigInteger('view_count')->nullable();
             $table->bigInteger('like_count')->nullable();

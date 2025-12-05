@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('channel_id', 50);
             $table->string('channel_title');
-            $table->string('thumbnail_url')->nullable();
+            $table->string('thumbnail')->nullable();
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ class Video extends Model
         'description',
         'channel_id',
         'channel_title',
-        'thumbnail_url',
+        'thumbnail',
         'published_at',
         'view_count',
         'like_count',
@@ -21,7 +21,7 @@ class Video extends Model
     ];
 
     protected $casts = [
-        'thumbnail_url' => 'array',
+        'thumbnail' => 'array',
     ];
 
     public function artist() {

@@ -9,7 +9,7 @@ class Artist extends Model
     protected $fillable = [
         'channel_id',
         'channel_title',
-        'thumbnail_url',
+        'thumbnail',
     ];
 
     public function videos() {
