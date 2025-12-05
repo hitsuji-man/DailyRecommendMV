@@ -43,8 +43,16 @@ class YouTubeService
                 return [];
             }
 
-            // JSON->PHPの連想配列のitemsキーを取り出し、それがnullまたは未定義なら空配列を返す
-            return $response->json()['items'] ?? [];
+            // JSON->PHPのitemsをキーとした連想配列を返す
+            $trending = $response->json()['items'];
+            // source_type "trend" を付与
+            $trending = array_map(function($item){
+                $item['sourceType'] = 'trend';
+                return $item;
+            }, $trending);
+
+            // nullまたは未定義なら空配列を返す
+            return $trending ?? [];
 
         } catch (\Exception $error) {
             // グローバル名前空間 Exception を補足
