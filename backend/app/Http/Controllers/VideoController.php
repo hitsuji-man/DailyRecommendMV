@@ -77,6 +77,8 @@ class VideoController extends Controller
             $upsertData[] = [
                 ...$v,
                 'artist_id'     => $artist->id,
+                'thumbnail' => (isset($v['thumbnail'])
+                        ? json_encode($v['thumbnail']) : null),
                 'published_at'  => isset($v['published_at'])
                     ? \Carbon\Carbon::parse($v['published_at'])->format('Y-m-d H:i:s') : null,
                 'created_at'    => now()->format('Y-m-d H:i:s'),
@@ -94,7 +96,7 @@ class VideoController extends Controller
                 'description',
                 'channel_id',
                 'channel_title',
-                'thumbnail_url',
+                'thumbnail',
                 'published_at',
                 'view_count',
                 'like_count',

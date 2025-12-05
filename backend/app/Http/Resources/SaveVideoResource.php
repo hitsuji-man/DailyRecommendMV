@@ -31,9 +31,9 @@ class SaveVideoResource extends JsonResource
                                 ?? $this['channelTitle']
                                 ?? $this->resource['snippet']['channelTitle'] ?? null,
 
-            'thumbnail_url'    => $this->thumbnail
-                                ?? $this['thumbnail']['url']
-                                ?? $this->resource['snippet']['thumbnails']['high']['url'] ?? null,
+            'thumbnail'    => $this->thumbnail
+                                ?? $this['thumbnail']
+                                ?? $this->resource['snippet']['thumbnails']['high'] ?? null,
 
             'published_at'  => $this->publishedAt
                                 ?? $this['publishedAt']
