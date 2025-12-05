@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
+use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
 use App\Models\Video;
 use App\Services\YouTubeService;
@@ -37,7 +38,7 @@ class VideoController extends Controller
     {
         $videos = $this->youtube->fetchTrendingMusic(30);
         // ResourceでAPIレスポンス化
-        return VideoResource::collection($videos);
+        return YouTubeVideoResource::collection($videos);
     }
 
     /**
