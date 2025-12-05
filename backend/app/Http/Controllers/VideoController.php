@@ -56,7 +56,7 @@ class VideoController extends Controller
      * ミックス動画リストを重複防止で保存する
      * @return JsonResponse
      */
-    public function storeMixedDailyList(Request $request): JsonResponse
+    public function saveMixedDailyList(Request $request): JsonResponse
     {
         $rawVideos = $this->youtube->buildMixedDailyList();
 
