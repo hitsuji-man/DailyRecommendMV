@@ -47,12 +47,8 @@ class VideoController extends Controller
      */
     public function getMixedDailyList(): AnonymousResourceCollection
     {
-        $videos = $this->youtube->buildMixedDailyList();
-        // ResourceでAPIレスポンス化
+        $videos = Video::orderBy('id', 'asc')->get();
         return VideoResource::collection($videos);
-
-        // TODO
-        // Videosテーブルから動画($videos)を読み込む
     }
 
 
