@@ -6,7 +6,9 @@ use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
+use App\Models\DailyRecommendation;
 use App\Models\Video;
+use App\Services\DailyRecommendationService;
 use App\Services\YouTubeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,10 +18,12 @@ use Illuminate\Support\Facades\Log;
 class VideoController extends Controller
 {
     private YouTubeService $youtube;
+    private DailyRecommendationService $dailyRecommendationServide;
 
-    public function __construct(YouTubeService $youtube)
+    public function __construct(YouTubeService $youtube, DailyRecommendationService $dailyRecommendationService)
     {
         $this->youtube = $youtube;
+        $this->dailyRecommendationServide = $dailyRecommendationService;
     }
 
     /**
@@ -102,7 +106,34 @@ class VideoController extends Controller
             ]
         );
 
-        return response()->json(['status' => 'success']);
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'upsert video',
+        ]);
+    }
+
+    /**
+     * 今日のおすすめMVを取得(なければ保存)
+     * @return VideoResource
+     */
+    public function getDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): VideoResource
+    {
+        return new VideoResource($dailyRecommendationService->pickDailyRecommendVideo());
+    }
+
+    /**
+     * 今日のおすすめMVをDBに保存
+     * @return JsonResponse
+     */
+    public function saveDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): JsonResponse
+    {
+        // GET API(getDailyRecommendVideo())を先に呼んでも、POST API(saveDailyRecommendVideo())を先に呼んでも常に結果は同じ(冪等)で壊れない
+        $recommendVideo = $dailyRecommendationService->pickDailyRecommendVideo();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'save recommendVideo'
+        ]);
     }
 
     /**

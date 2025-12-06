@@ -13,4 +13,6 @@ Route::prefix('v1')->group(function() {
     Route::get('/videos/mixed-daily', [VideoController::class, 'getMixedDailyList']);
     // 管理者のみCRONでPOSTしたい
     Route::post('/videos/mixed-daily', [VideoController::class, 'saveMixedDailyList']);
+    Route::get('/recommendations/today', [VideoController::class, 'getDailyRecommendVideo']);
+    Route::post('/recommendations/today', [VideoController::class, 'saveDailyRecommendVideo']);
 });
