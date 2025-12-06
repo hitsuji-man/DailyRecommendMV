@@ -28,7 +28,7 @@ class DailyRecommendationService
         // まだ保存されていなければ、ランダム抽選して取得
         $recommendVideo = Video::inRandomOrder()->first();
 
-        // 直近7日間に同じMVを取得していた場合、それを除いて再度ランダム抽選
+        // 直近1週間に同じMVを取得していた場合、それを除いて再度ランダム抽選
         if ($this->checkAlreadySavedVideoFor1Week($recommendVideo)) {
             // 直近1週間で保存したMVのvideo_idリストを取得
             $oneWeekAgo = now()->subDays(7)->toDateString();
