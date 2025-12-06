@@ -128,7 +128,7 @@ class VideoController extends Controller
     public function saveDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): JsonResponse
     {
         // GET API(getDailyRecommendVideo())を先に呼んでも、POST API(saveDailyRecommendVideo())を先に呼んでも常に結果は同じ(冪等)で壊れない
-        $recommendVideo = $dailyRecommendationService->pickDailyRecommendVideo();
+        $dailyRecommendationService->pickDailyRecommendVideo();
 
         return response()->json([
             'status'  => 'success',
