@@ -30,10 +30,15 @@ class DailyRecommendationService
 
         // 直近7日間に同じMVを取得していた場合、それを除いて再度ランダム抽選
         if ($this->checkAlreadySavedVideoFor1Week($recommendVideo)) {
-            // Videoテーブルから該当MVのレコードを除く
-            $videos = Video::whereNotIn('id',[$recommendVideo->id])->get();
-            // 再度ランダム取得
-            $recommendVideo = $videos->random();
+            // 直近1週間で保存したMVのvideo_idリストを取得
+            $oneWeekAgo = now()->subDays(7)->toDateString();
+            $excludeVideoIds = DailyRecommendation::where('recommend_date', '>=', $oneWeekAgo)
+                ->pluck('video_id');
+
+            // 上記video_idリストを除いて再度ランダム取得
+            $recommendVideo = Video::whereNotIn('id',$excludeVideoIds)
+                ->inRandomOrder()
+                ->first();
         }
 
         // ランダム取得したMVを固定化させるためにここで保存
@@ -47,23 +52,17 @@ class DailyRecommendationService
     }
 
     /**
-     * 直近7日間で同じMVが保存されていないかチェック
+     * 直近1週間で同じMVが保存されていないかチェック
      * @return boolean
      */
     public function checkAlreadySavedVideoFor1Week(Video $recommendVideo): bool
     {
-        $alreadySavedFlag = false;
-        // daily_recommendationsテーブルを7日間(7レコード)検索
-        $thisWeeksRecord = DailyRecommendation::whereBetween('created_at',[
-            Carbon::now()->startOfWeek(),
-            Carbon::now()->endOfWeek()
-        ])->get();
+        $oneWeekAgo = now()->subDays(7)->toDateString();
 
         // 同じvideo_idが含まれているか
-        foreach ($thisWeeksRecord as $record) {
-            $record['video_id'] == $recommendVideo->id
-                            ? $alreadySavedFlag = true : $alreadySavedFlag = false;
-        }
-        return $alreadySavedFlag;
+        // daily_recommendationsテーブルを1週間(7レコード)検索
+        return DailyRecommendation::where('video_id', $recommendVideo->id)
+            ->where('recommend_date', '>=', $oneWeekAgo)
+            ->exists();
     }
 }
