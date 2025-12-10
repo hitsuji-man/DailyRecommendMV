@@ -4,13 +4,22 @@ namespace App\Services;
 use App\Models\DailyRecommendation;
 use App\Models\Video;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class DailyRecommendationService
 {
     /**
+     * おすすめMV履歴一覧を取得
+     * @return Collection
+     */
+    public function getDailyRecommendVideoHistory(): Collection {
+       return DailyRecommendation::with('video')->get();
+    }
+
+    /**
      * 今日のおすすめMV動画の取得(保存を含む):
      *
-     * 既に今日の動画が保存されている場合は、daily_recommendationsテーブルから動画を取得し、まだ保存されていない場合はvideosテーブルからランダム抽選して「保存」し取得する
+     * 既に今日の動画が保存されている場合は、daily_recommendationsテーブルから動画を取得し、まだ保存されていない場合はvideosテーブルからランダム抽選してdaily_recommendationsテーブルに「保存」し取得する
      * @return Video
      */
     public function pickDailyRecommendVideo(): Video

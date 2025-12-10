@@ -15,17 +15,27 @@ class DailyRecommendationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'videoId'         => $this->youtube_id,
-            'title'           => $this->title,
-            'description'     => $this->description,
-            'channelId'       => $this->channel_id,
-            'channelTitle'    => $this->channel_title,
-            'thumbnail'       => $this->thumbnail,
-            'publishedAt'     => $this->published_at,
-            'viewCount'       => $this->view_count,
-            'likeCount'       => $this->like_count,
-            'sourceType'      => $this->source_type,
-            'recommendDate'  => $this->recommend_date,
+            'videoId'         => $this->youtube_id
+                                ?? $this->video->youtube_id ?? null,
+            'title'           => $this->title
+                                ?? $this->video->title ?? null,
+            'description'     => $this->description
+                                ?? $this->video->description ?? null,
+            'channelId'       => $this->channel_id
+                                ?? $this->video->channel_id ?? null,
+            'channelTitle'    => $this->channel_title
+                                ?? $this->video->channel_title ?? null,
+            'thumbnail'       => $this->thumbnail
+                                ?? $this->video->thumbnail ?? null,
+            'publishedAt'     => $this->published_id
+                                ?? $this->video->published_at ?? null,
+            'viewCount'       => $this->view_count
+                                ?? $this->video->view_count ?? null,
+            'likeCount'       => $this->like_count
+                                ?? $this->video->like_count ?? null,
+            'sourceType'      => $this->source_type
+                                ?? $this->video->source_type ?? null,
+            'recommendDate'  => $this->recommend_date ?? null,
         ];
     }
 }

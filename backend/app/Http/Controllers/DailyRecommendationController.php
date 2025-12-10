@@ -6,6 +6,7 @@ use App\Http\Resources\DailyRecommendationResource;
 use App\Services\DailyRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DailyRecommendationController extends Controller
 {
@@ -13,6 +14,16 @@ class DailyRecommendationController extends Controller
 
     public function __construct(DailyRecommendationService $dailyRecommendationService) {
         $this->dailyRecommendationService = $dailyRecommendationService;
+    }
+
+    /**
+     * おすすめMV履歴一覧を取得
+     * @return AnonymousResourceCollection
+     */
+    public function getDailyRecommendVideoHistory(): AnonymousResourceCollection
+    {
+        $dailyRecommendationsHistory = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
+        return DailyRecommendationResource::collection($dailyRecommendationsHistory);
     }
 
     /**
