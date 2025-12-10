@@ -15,16 +15,16 @@ class VideoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'videoId'      => $this->youtube_id,
-            'title'        => $this->title,
-            'description'  => $this->description,
-            'channelId'    => $this->channel_id,
-            'channelTitle' => $this->channel_title,
-            'thumbnail'    => $this->thumbnail,
-            'publishedAt'  => $this->published_at,
-            'viewCount'    => $this->view_count,
-            'likeCount'    => $this->like_count,
-            'sourceType'   => $this->source_type,
+            'videoId'      => $this->youtube_id ?? null,
+            'title'        => $this->title ?? null,
+            'description'  => $this->description ?? null,
+            'channelId'    => $this->channel_id ?? null,
+            'channelTitle' => $this->channel_title ?? null,
+            'thumbnail'    => $this->thumbnail ?? null,
+            'publishedAt'  => $this->published_at ?? null,
+            'viewCount'    => $this->view_count ?? null,
+            'likeCount'    => $this->like_count ?? null,
+            'sourceType'   => $this->source_type ?? null,
         ];
 
     }
