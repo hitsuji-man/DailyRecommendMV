@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyRecommendationController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,6 @@ Route::prefix('v1')->group(function() {
     Route::get('/videos/mixed-daily', [VideoController::class, 'getMixedDailyList']);
     // 管理者のみCRONでPOSTしたい
     Route::post('/videos/mixed-daily', [VideoController::class, 'saveMixedDailyList']);
-    Route::get('/recommendations/today', [VideoController::class, 'getDailyRecommendVideo']);
-    Route::post('/recommendations/today', [VideoController::class, 'saveDailyRecommendVideo']);
+    Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
+    Route::post('/recommendations/today', [DailyRecommendationController::class, 'saveDailyRecommendVideo']);
 });

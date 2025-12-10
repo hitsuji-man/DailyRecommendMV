@@ -22,7 +22,9 @@ class DailyRecommendationService
 
         // リレーションからVideoを返す
         if($existing) {
-            return $existing->video;
+            $video = $existing->video;
+            $video->recommend_date = $existing->recommend_date;
+            return $video;
         }
 
         // まだ保存されていなければ、ランダム抽選して取得
@@ -40,6 +42,8 @@ class DailyRecommendationService
                 ->inRandomOrder()
                 ->first();
         }
+
+        $recommendVideo->recommend_date = $today;
 
         // ランダム取得したMVを固定化させるためにここで保存
         DailyRecommendation::create([

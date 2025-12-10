@@ -18,20 +18,10 @@ use Illuminate\Support\Facades\Log;
 class VideoController extends Controller
 {
     private YouTubeService $youtube;
-    private DailyRecommendationService $dailyRecommendationServide;
 
-    public function __construct(YouTubeService $youtube, DailyRecommendationService $dailyRecommendationService)
+    public function __construct(YouTubeService $youtube)
     {
         $this->youtube = $youtube;
-        $this->dailyRecommendationServide = $dailyRecommendationService;
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
     }
 
     /**
@@ -109,30 +99,6 @@ class VideoController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'upsert video',
-        ]);
-    }
-
-    /**
-     * 今日のおすすめMVを取得(なければ保存)
-     * @return VideoResource
-     */
-    public function getDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): VideoResource
-    {
-        return new VideoResource($dailyRecommendationService->pickDailyRecommendVideo());
-    }
-
-    /**
-     * 今日のおすすめMVをDBに保存
-     * @return JsonResponse
-     */
-    public function saveDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): JsonResponse
-    {
-        // GET API(getDailyRecommendVideo())を先に呼んでも、POST API(saveDailyRecommendVideo())を先に呼んでも常に結果は同じ(冪等)で壊れない
-        $dailyRecommendationService->pickDailyRecommendVideo();
-
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'save recommendVideo'
         ]);
     }
 
