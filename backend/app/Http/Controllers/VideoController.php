@@ -69,7 +69,7 @@ class VideoController extends Controller
                 'thumbnail' => (isset($v['thumbnail'])
                         ? json_encode($v['thumbnail']) : null),
                 'published_at'  => isset($v['published_at'])
-                    ? \Carbon\Carbon::parse($v['published_at'])->format('Y-m-d H:i:s') : null,
+                    ? \Carbon\Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s') : null,
                 'created_at'    => now()->format('Y-m-d H:i:s'),
                 'updated_at'    => now()->format('Y-m-d H:i:s'),
             ];
