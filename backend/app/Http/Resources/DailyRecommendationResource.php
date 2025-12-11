@@ -27,7 +27,7 @@ class DailyRecommendationResource extends JsonResource
                                 ?? $this->video->channel_title ?? null,
             'thumbnail'       => $this->thumbnail
                                 ?? $this->video->thumbnail ?? null,
-            'publishedAt'     => $this->published_id
+            'publishedAt'     => $this->published_at
                                 ?? $this->video->published_at ?? null,
             'viewCount'       => $this->view_count
                                 ?? $this->video->view_count ?? null,
