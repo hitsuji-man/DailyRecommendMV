@@ -8,6 +8,7 @@ use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
 use App\Models\Video;
 use App\Services\YouTubeService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -66,10 +67,10 @@ class VideoController extends Controller
             $upsertData[] = [
                 ...$v,
                 'artist_id'     => $artist->id,
-                'thumbnail' => (isset($v['thumbnail'])
-                        ? json_encode($v['thumbnail']) : null),
-                'published_at'  => isset($v['published_at'])
-                    ? \Carbon\Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s') : null,
+                'thumbnail'     => (isset($v['thumbnail'])
+                                ? json_encode($v['thumbnail']) : null),
+                'published_at'  => (isset($v['published_at'])
+                                ? Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s') : null),
                 'created_at'    => now()->format('Y-m-d H:i:s'),
                 'updated_at'    => now()->format('Y-m-d H:i:s'),
             ];
