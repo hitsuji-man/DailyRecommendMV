@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -45,8 +46,11 @@ class YouTubeService
 
             // JSON->PHPのitemsをキーとした連想配列を返す
             $trending = $response->json()['items'];
+
+            // published_at フォーマットDATETIME型('Y-m-d H:i:s')
             // source_type "trend" を付与
             $trending = array_map(function($item){
+                $item['snippet']['publishedAt'] = Carbon::parse($item['snippet']['publishedAt'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s');
                 $item['sourceType'] = 'trend';
                 return $item;
             }, $trending);
