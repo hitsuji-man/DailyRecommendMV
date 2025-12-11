@@ -6,9 +6,7 @@ use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
-use App\Models\DailyRecommendation;
 use App\Models\Video;
-use App\Services\DailyRecommendationService;
 use App\Services\YouTubeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -103,11 +101,13 @@ class VideoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 特定の動画詳細を表示する
+     * @return VideoResource
      */
-    public function show(Video $video)
+    public function showVideo(int $id): VideoResource
     {
-        //
+        $video = Video::findOrFail($id);
+        return new VideoResource($video);
     }
 
     /**
