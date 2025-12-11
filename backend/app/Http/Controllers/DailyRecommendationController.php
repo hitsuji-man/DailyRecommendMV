@@ -22,8 +22,8 @@ class DailyRecommendationController extends Controller
      */
     public function getDailyRecommendVideoHistory(): AnonymousResourceCollection
     {
-        $dailyRecommendationsHistory = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
-        return DailyRecommendationResource::collection($dailyRecommendationsHistory);
+        $dailyRecommendationHistory = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
+        return DailyRecommendationResource::collection($dailyRecommendationHistory);
     }
 
     /**
