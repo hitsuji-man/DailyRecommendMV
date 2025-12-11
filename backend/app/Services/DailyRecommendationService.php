@@ -13,7 +13,7 @@ class DailyRecommendationService
      * @return Collection
      */
     public function getDailyRecommendVideoHistory(): Collection {
-       return DailyRecommendation::with('video')->get();
+       return DailyRecommendation::with('video')->orderBy('id', 'desc')->get();
     }
 
     /**
