@@ -6,12 +6,15 @@ use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
+use App\Models\User;
+use App\Models\UserHistory;
 use App\Models\Video;
 use App\Services\YouTubeService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class VideoController extends Controller
@@ -108,6 +111,23 @@ class VideoController extends Controller
     public function showVideo(int $id): VideoResource
     {
         $video = Video::findOrFail($id);
+
+        // TODO
+        // 仮にログイン中にする
+        $user = User::find(1);
+        // そのユーザーでログイン状態にする
+        Auth::login($user);
+
+        // ログイン中なら視聴履歴を保存
+        if (Auth::check()) {
+            UserHistory::create([
+                'user_id'    => Auth::id(),
+                'video_id'   => $video->id,
+                'viewed_at'  => now()->format('Y-m-d H:i:s'),
+                'created_at' => now()->format('Y-m-d H:i:s'),
+            ]);
+        }
+
         return new VideoResource($video);
     }
 
