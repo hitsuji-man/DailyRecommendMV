@@ -32,4 +32,8 @@ class Video extends Model
     {
         return $this->hasMany(DailyRecommendation::class);
     }
+
+    public function userHistories() {
+        return $this->hasMany(UserHistory::class);
+    }
 }
