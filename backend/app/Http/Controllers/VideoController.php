@@ -9,6 +9,7 @@ use App\Models\Artist;
 use App\Models\User;
 use App\Models\UserHistory;
 use App\Models\Video;
+use App\Services\VideoService;
 use App\Services\YouTubeService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -20,10 +21,12 @@ use Illuminate\Support\Facades\Log;
 class VideoController extends Controller
 {
     private YouTubeService $youtube;
+    private VideoService $videoService;
 
-    public function __construct(YouTubeService $youtube)
+    public function __construct(YouTubeService $youtube, VideoService $videoService)
     {
         $this->youtube = $youtube;
+        $this->videoService = $videoService;
     }
 
     /**
@@ -110,23 +113,7 @@ class VideoController extends Controller
      */
     public function showVideo(int $id): VideoResource
     {
-        $video = Video::findOrFail($id);
-
-        // TODO
-        // 仮にログイン中にする
-        $user = User::find(1);
-        // そのユーザーでログイン状態にする
-        Auth::login($user);
-
-        // ログイン中なら視聴履歴を保存
-        if (Auth::check()) {
-            UserHistory::create([
-                'user_id'    => Auth::id(),
-                'video_id'   => $video->id,
-                'viewed_at'  => now()->format('Y-m-d H:i:s'),
-                'created_at' => now()->format('Y-m-d H:i:s'),
-            ]);
-        }
+        $video = $this->videoService->showVideoWithHistory($id);
 
         return new VideoResource($video);
     }
