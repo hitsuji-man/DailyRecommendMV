@@ -123,4 +123,11 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /**
+     * 開発用ミドルウェアの設定
+     */
+    'dev_auto_login' => env('DEV_AUTO_LOGIN', false),
+
+
 ];
