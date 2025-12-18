@@ -21,6 +21,8 @@ Route::prefix('v1')->group(function() {
         Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
         Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistories']);
         Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);
+        Route::delete('/histories/{id}', [UserHistoryController::class, 'deleteUserHistory']);
+        Route::delete('/histories', [UserHistoryController::class, 'deleteAllUsersHistories']);
     });
 
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
