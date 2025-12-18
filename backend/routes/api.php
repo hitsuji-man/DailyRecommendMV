@@ -18,7 +18,7 @@ Route::prefix('v1')->group(function() {
 
     Route::middleware(['dev.login'])->group(function() {
         Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
-        Route::get('/history', [UserHistoryController::class, 'getUserHistory']);
+        Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);
     });
 
     Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistory']);

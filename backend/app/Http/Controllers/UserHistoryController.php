@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserHistoryResource;
 use App\Models\UserHistory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserHistoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 視聴履歴一覧を取得
+     * @return AnonymousResourceCollection
      */
-    public function getUserHistory()
+    public function getUserHistories(): AnonymousResourceCollection
     {
         $userHistory = UserHistory::orderBy('viewed_at', 'desc')->get();
         return UserHistoryResource::collection($userHistory);
