@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DailyRecommendationController;
+use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::prefix('v1')->group(function() {
 
     Route::middleware(['dev.login'])->group(function() {
         Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
+        Route::get('/history', [UserHistoryController::class, 'getUserHistory']);
     });
 
     Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistory']);

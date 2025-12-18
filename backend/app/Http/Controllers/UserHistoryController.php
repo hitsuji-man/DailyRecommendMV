@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserHistoryResource;
+use App\Models\UserHistory;
 use Illuminate\Http\Request;
 
 class UserHistoryController extends Controller
@@ -9,9 +11,10 @@ class UserHistoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getUserHistory()
     {
-        //
+        $userHistory = UserHistory::orderBy('viewed_at', 'desc')->get();
+        return UserHistoryResource::collection($userHistory);
     }
 
     /**
