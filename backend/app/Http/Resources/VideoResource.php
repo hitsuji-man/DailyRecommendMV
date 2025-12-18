@@ -26,6 +26,5 @@ class VideoResource extends JsonResource
             'likeCount'    => $this->like_count ?? null,
             'sourceType'   => $this->source_type ?? null,
         ];
-
     }
 }
