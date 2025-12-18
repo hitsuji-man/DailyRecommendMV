@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\UserHistory;
 use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
@@ -12,11 +13,11 @@ class VideoService
      * 動画を取得し、ログイン中なら視聴履歴を保存する
      * @return Video
      */
-    public function showVideoWithHistory(int $videoId): Video
+    public function showVideoWithHistory(int $videoId, ?User $user = null): Video
     {
         $video = Video::findOrFail($videoId);
 
-        if (Auth::check()) {
+        if ($user) {
             $this->storeUserHistory(Auth::id(), $video->id);
         }
 

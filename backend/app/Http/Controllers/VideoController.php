@@ -113,7 +113,7 @@ class VideoController extends Controller
      */
     public function showVideo(int $id): VideoResource
     {
-        $video = $this->videoService->showVideoWithHistory($id);
+        $video = $this->videoService->showVideoWithHistory($id, Auth::user());
 
         return new VideoResource($video);
     }

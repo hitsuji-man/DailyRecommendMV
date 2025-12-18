@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function() {
     Route::post('/videos/mixed-daily', [VideoController::class, 'saveMixedDailyList']);
 
     Route::middleware(['dev.login'])->group(function() {
+        // showVideo:本番では未ログイン時のapiにする
         Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
         Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistories']);
         Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);
