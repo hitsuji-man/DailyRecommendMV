@@ -20,10 +20,10 @@ class DailyRecommendationController extends Controller
      * おすすめMV履歴一覧を取得
      * @return AnonymousResourceCollection
      */
-    public function getDailyRecommendVideoHistory(): AnonymousResourceCollection
+    public function getDailyRecommendVideoHistories(): AnonymousResourceCollection
     {
-        $dailyRecommendationHistory = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
-        return DailyRecommendationResource::collection($dailyRecommendationHistory);
+        $dailyRecommendationHistories = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
+        return DailyRecommendationResource::collection($dailyRecommendationHistories);
     }
 
     /**
