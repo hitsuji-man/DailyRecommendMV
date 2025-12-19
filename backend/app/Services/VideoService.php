@@ -18,6 +18,10 @@ class VideoService
      */
     public function getMixedDailyList(?User $user = null): Collection
     {
+        // when句:ログイン中(withCountを追加)、未ログイン(何もしない)
+        /**
+         * クエリの中身:userFavoritesリレーションより、ログインユーザーでレコードが存在(お気に入り済 count=1)、存在しない(未お気に入り count=0)
+         */
         return Video::query()
             ->orderBy('id', 'asc')
             ->when($user, function ($q) use ($user) {
@@ -36,6 +40,10 @@ class VideoService
      */
     public function showVideoWithHistory(int $videoId, ?User $user = null): Video
     {
+        // when句:ログイン中(withCountを追加)、未ログイン(何もしない)
+        /**
+         * クエリの中身:userFavoritesリレーションより、ログインユーザーでレコードが存在(お気に入り済 count=1)、存在しない(未お気に入り count=0)
+         */
         $video = Video::query()
             ->when($user, function ($q) use ($user) {
                 $q->withCount([
