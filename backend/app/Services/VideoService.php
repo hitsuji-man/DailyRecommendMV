@@ -36,7 +36,15 @@ class VideoService
      */
     public function showVideoWithHistory(int $videoId, ?User $user = null): Video
     {
-        $video = Video::findOrFail($videoId);
+        $video = Video::query()
+            ->when($user, function ($q) use ($user) {
+                $q->withCount([
+                    'favorites as is_favorite' => function ($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    }
+                ]);
+            })
+            ->findOrFail($videoId);
 
         if ($user) {
             $this->storeUserHistory(Auth::id(), $video->id);
