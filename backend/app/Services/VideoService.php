@@ -22,7 +22,7 @@ class VideoService
             ->orderBy('id', 'asc')
             ->when($user, function ($q) use ($user) {
                 $q->withCount([
-                    'favorites as is_favorite' => function ($q2) use ($user) {
+                    'userFavorites as is_favorite' => function ($q2) use ($user) {
                         $q2->where('user_id', $user->id);
                     }
                 ]);
@@ -39,7 +39,7 @@ class VideoService
         $video = Video::query()
             ->when($user, function ($q) use ($user) {
                 $q->withCount([
-                    'favorites as is_favorite' => function ($q2) use ($user) {
+                    'userFavorites as is_favorite' => function ($q2) use ($user) {
                         $q2->where('user_id', $user->id);
                     }
                 ]);

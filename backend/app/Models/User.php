@@ -49,4 +49,9 @@ class User extends Authenticatable
     public function userHistories() {
         return $this->hasMany(UserHistory::class);
     }
+
+    public function userFavorites() {
+        return $this->hasMany(UserFavorite::class);
+    }
+
 }
