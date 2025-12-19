@@ -6,8 +6,6 @@ use App\Http\Resources\SaveVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\YouTubeVideoResource;
 use App\Models\Artist;
-use App\Models\User;
-use App\Models\UserHistory;
 use App\Models\Video;
 use App\Services\VideoService;
 use App\Services\YouTubeService;
@@ -16,7 +14,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class VideoController extends Controller
 {
