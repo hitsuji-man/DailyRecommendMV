@@ -43,7 +43,7 @@ class VideoController extends Controller
      */
     public function getMixedDailyList(): AnonymousResourceCollection
     {
-        $videos = Video::orderBy('id', 'asc')->get();
+        $videos = $this->videoService->getMixedDailyList(Auth::user());
         return VideoResource::collection($videos);
     }
 
