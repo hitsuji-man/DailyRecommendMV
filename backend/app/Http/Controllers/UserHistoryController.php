@@ -27,8 +27,8 @@ class UserHistoryController extends Controller
      */
     public function getUserHistories(): AnonymousResourceCollection
     {
-        $userHistory = $this->userHistoryService->getUserHistories();
-        return UserHistoryResource::collection($userHistory);
+        $userHistories = $this->userHistoryService->getUserHistories();
+        return UserHistoryResource::collection($userHistories);
     }
 
     /**
