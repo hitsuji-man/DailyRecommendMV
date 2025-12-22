@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DailyRecommendationController;
+use App\Http\Controllers\UserFavoriteController;
 use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ Route::prefix('v1')->group(function() {
         Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);
         Route::delete('/histories/{id}', [UserHistoryController::class, 'deleteUserHistory']);
         Route::delete('/histories', [UserHistoryController::class, 'deleteAllUsersHistories']);
+        Route::get('/favorites', [UserFavoriteController::class, 'getUserFavorites']);
     });
 
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
