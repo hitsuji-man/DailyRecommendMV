@@ -27,7 +27,7 @@ class UserHistoryController extends Controller
      */
     public function getUserHistories(): AnonymousResourceCollection
     {
-        $userHistory = UserHistory::orderBy('viewed_at', 'desc')->get();
+        $userHistory = $this->userHistoryService->getUserHistories();
         return UserHistoryResource::collection($userHistory);
     }
 
