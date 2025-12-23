@@ -46,7 +46,7 @@ class UserFavoriteService
         }
     }
 
-    public function storeUserFavorite(Video $video, User $user): void
+    private function storeUserFavorite(Video $video, User $user): void
     {
         UserFavorite::firstOrCreate([
             'user_id'    => $user->id,
