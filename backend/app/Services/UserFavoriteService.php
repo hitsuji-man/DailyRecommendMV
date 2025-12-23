@@ -46,6 +46,23 @@ class UserFavoriteService
         }
     }
 
+    /**
+     * お気に入りを1件削除する
+     * @return void
+     */
+    public function deleteUserFavorite(int $id): void
+    {
+        $favorite = UserFavorite::find($id);
+        if(!$favorite) {
+            throw new \DomainException('user favorite not found');
+        }
+        $favorite->delete();
+    }
+
+    /**
+     * DBにお気に入りレコードを保存
+     * @return void
+     */
     private function storeUserFavorite(Video $video, User $user): void
     {
         UserFavorite::firstOrCreate([

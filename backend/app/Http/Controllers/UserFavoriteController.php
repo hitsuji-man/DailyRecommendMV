@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserFavoriteResource;
 use App\Services\UserFavoriteService;
+use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,10 +68,22 @@ class UserFavoriteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * お気に入りを1件削除する
+     * @return JsonResponse
      */
-    public function destroy(string $id)
+    public function deleteUserFavorite(int $id): JsonResponse
     {
-        //
+        try {
+            $this->userFavoriteService->deleteUserFavorite($id);
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'delete user favorite',
+            ], 200);
+        } catch (DomainException $error) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $error->getMessage(),
+            ], 404);
+        }
     }
 }
