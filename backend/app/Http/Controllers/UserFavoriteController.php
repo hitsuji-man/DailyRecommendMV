@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserFavoriteResource;
 use App\Services\UserFavoriteService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 
 class UserFavoriteController extends Controller
 {
@@ -27,11 +29,25 @@ class UserFavoriteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * お気に入りを1件保存する
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function saveUserFavorite(int $id): JsonResponse
     {
-        //
+        try {
+            $this->userFavoriteService->saveUserFavorite($id, Auth::user());
+
+            return response()->json([
+                'status'   => 'success',
+                'message'  => 'save user favorite',
+            ], 200);
+
+        } catch (RuntimeException $error) {
+            return response()->json([
+                'status'   => 'error',
+                'message'  => $error->getMessage(),
+            ], 500);
+        }
     }
 
     /**

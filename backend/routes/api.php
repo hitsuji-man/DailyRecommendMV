@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function() {
         Route::delete('/histories/{id}', [UserHistoryController::class, 'deleteUserHistory']);
         Route::delete('/histories', [UserHistoryController::class, 'deleteAllUsersHistories']);
         Route::get('/favorites', [UserFavoriteController::class, 'getUserFavorites']);
+        Route::post('/favorites/{id}', [UserFavoriteController::class, 'saveUserFavorite']);
     });
 
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
