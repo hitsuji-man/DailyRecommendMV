@@ -23,7 +23,7 @@ class VideoService
          * クエリの中身:userFavoritesリレーションより、ログインユーザーでレコードが存在(お気に入り済 count=1)、存在しない(未お気に入り count=0)
          */
         return Video::query()
-            ->orderBy('id', 'asc')
+            ->orderBy('id', 'desc')
             ->when($user, function ($q) use ($user) {
                 $q->withCount([
                     'userFavorites as is_favorite' => function ($q2) use ($user) {
@@ -31,6 +31,7 @@ class VideoService
                     }
                 ]);
             })
+            ->limit(50)
             ->get();
     }
 
