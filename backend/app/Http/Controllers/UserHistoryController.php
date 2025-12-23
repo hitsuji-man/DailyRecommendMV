@@ -66,7 +66,7 @@ class UserHistoryController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'message' => 'delete user history',
-            ]);
+            ], 200);
         } catch (DomainException $error) {
             return response()->json([
                 'status'  => 'error',
