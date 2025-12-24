@@ -74,7 +74,7 @@ class UserFavoriteController extends Controller
     public function deleteUserFavorite(int $videoId): JsonResponse
     {
         try {
-            $this->userFavoriteService->deleteUserFavorite($videoId);
+            $this->userFavoriteService->deleteUserFavorite($videoId, Auth::user());
             return response()->json([
                 'status'  => 'success',
                 'message' => 'delete user favorite',

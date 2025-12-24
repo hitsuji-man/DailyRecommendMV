@@ -50,13 +50,14 @@ class UserFavoriteService
      * お気に入りを1件削除する
      * @return void
      */
-    public function deleteUserFavorite(int $videoId): void
+    public function deleteUserFavorite(int $videoId, User $user): void
     {
-        $favorite = UserFavorite::find($videoId);
-        if(!$favorite) {
+        $deleted = UserFavorite::where('video_id', $videoId)
+            ->where('user_id', $user->id)
+            ->delete();
+        if($deleted === 0) {
             throw new \DomainException('user favorite not found');
         }
-        $favorite->delete();
     }
 
     /**
