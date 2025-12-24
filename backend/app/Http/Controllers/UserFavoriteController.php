@@ -33,10 +33,10 @@ class UserFavoriteController extends Controller
      * お気に入りを1件保存する
      * @return JsonResponse
      */
-    public function saveUserFavorite(int $id): JsonResponse
+    public function saveUserFavorite(int $videoId): JsonResponse
     {
         try {
-            $this->userFavoriteService->saveUserFavorite($id, Auth::user());
+            $this->userFavoriteService->saveUserFavorite($videoId, Auth::user());
 
             return response()->json([
                 'status'   => 'success',
@@ -71,10 +71,10 @@ class UserFavoriteController extends Controller
      * お気に入りを1件削除する
      * @return JsonResponse
      */
-    public function deleteUserFavorite(int $id): JsonResponse
+    public function deleteUserFavorite(int $videoId): JsonResponse
     {
         try {
-            $this->userFavoriteService->deleteUserFavorite($id);
+            $this->userFavoriteService->deleteUserFavorite($videoId);
             return response()->json([
                 'status'  => 'success',
                 'message' => 'delete user favorite',

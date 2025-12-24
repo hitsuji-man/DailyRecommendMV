@@ -36,9 +36,9 @@ class UserFavoriteService
      * お気に入りを1件保存する
      * @return void
      */
-    public function saveUserFavorite(int $id, User $user): void
+    public function saveUserFavorite(int $videoId, User $user): void
     {
-        $video = Video::findOrFail($id);
+        $video = Video::findOrFail($videoId);
         try {
             $this->storeUserFavorite($video, $user);
         } catch (QueryException $error) {
@@ -50,9 +50,9 @@ class UserFavoriteService
      * お気に入りを1件削除する
      * @return void
      */
-    public function deleteUserFavorite(int $id): void
+    public function deleteUserFavorite(int $videoId): void
     {
-        $favorite = UserFavorite::find($id);
+        $favorite = UserFavorite::find($videoId);
         if(!$favorite) {
             throw new \DomainException('user favorite not found');
         }
