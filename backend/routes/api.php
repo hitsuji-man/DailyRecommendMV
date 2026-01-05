@@ -30,5 +30,6 @@ Route::prefix('v1')->group(function() {
     });
 
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
+    // 管理者のみCRONでPOSTしたい
     Route::post('/recommendations/today', [DailyRecommendationController::class, 'saveDailyRecommendVideo']);
 });
