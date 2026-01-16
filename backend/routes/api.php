@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DailyRecommendationController;
 use App\Http\Controllers\UserFavoriteController;
 use App\Http\Controllers\UserHistoryController;
@@ -32,4 +33,6 @@ Route::prefix('v1')->group(function() {
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
     // 管理者のみCRONでPOSTしたい
     Route::post('/recommendations/today', [DailyRecommendationController::class, 'saveDailyRecommendVideo']);
+
+    Route::post('/anonymous-login', [AuthController::class, 'anonymousLogin']);
 });
