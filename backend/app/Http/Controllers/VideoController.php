@@ -115,6 +115,7 @@ class VideoController extends Controller
         $user = null;
 
         if ($token = request()->bearerToken()) {
+            // 任意認証(tokenあり:Userが取得できる。tokenなし:null)
             $accessToken = PersonalAccessToken::findToken($token);
             $user = $accessToken?->tokenable;
         }
