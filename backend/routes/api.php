@@ -22,12 +22,18 @@ Route::prefix('v1')->group(function() {
         // showVideo:本番では未ログイン時のapiにする
         Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
         Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistories']);
+
         Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);
         Route::delete('/histories/{id}', [UserHistoryController::class, 'deleteUserHistory']);
         Route::delete('/histories', [UserHistoryController::class, 'deleteAllUsersHistories']);
+
         Route::get('/favorites', [UserFavoriteController::class, 'getUserFavorites']);
         Route::post('/favorites/{id}', [UserFavoriteController::class, 'saveUserFavorite']);
         Route::delete('/favorites/{id}', [UserFavoriteController::class, 'deleteUserFavorite']);
+
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/user', [AuthController::class, 'user']);
+        Route::post('/user/password', [AuthController::class, 'changePassword']);
     });
 
     Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
@@ -35,4 +41,6 @@ Route::prefix('v1')->group(function() {
     Route::post('/recommendations/today', [DailyRecommendationController::class, 'saveDailyRecommendVideo']);
 
     Route::post('/anonymous-login', [AuthController::class, 'anonymousLogin']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
 });
