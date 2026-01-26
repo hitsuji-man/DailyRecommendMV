@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -165,16 +166,9 @@ class AuthController extends Controller
     /**
      * ログイン中ユーザー情報を取得
      */
-    public function user(Request $request): JsonResponse
+    public function user(Request $request): UserResource
     {
-        $user = $request->user();
-
-        return response()->json([
-            'id'       => $user->id,
-            'name'     => $user->name,
-            'email'    => $user->email,
-            'is_guest' => $user->email === null,
-        ]);
+        return new UserResource($request->user());
     }
 
     /**
@@ -208,12 +202,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'ユーザー情報を更新しました',
-            'user' => [
-                'id'       => $user->id,
-                'name'     => $user->name,
-                'email'    => $user->email,
-                'is_guest' => false,
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 
