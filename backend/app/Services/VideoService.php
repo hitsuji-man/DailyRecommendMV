@@ -56,7 +56,7 @@ class VideoService
             ->findOrFail($videoId);
 
         if ($user) {
-            $this->storeUserHistory(Auth::id(), $video->id);
+            $this->storeUserHistory($user->id, $video->id);
         }
 
         return $video;

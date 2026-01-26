@@ -17,10 +17,10 @@ Route::prefix('v1')->group(function() {
     Route::get('/videos/mixed-daily', [VideoController::class, 'getMixedDailyList']);
     // 管理者のみCRONでPOSTしたい
     Route::post('/videos/mixed-daily', [VideoController::class, 'saveMixedDailyList']);
+    // showVideo:本番では未ログイン時のapiにする
+    Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
 
-    Route::middleware(['dev.login'])->group(function() {
-        // showVideo:本番では未ログイン時のapiにする
-        Route::get('/videos/{id}', [VideoController::class, 'showVideo']);
+    Route::middleware(['auth:sanctum'])->group(function() {
         Route::get('/recommendations', [DailyRecommendationController::class, 'getDailyRecommendVideoHistories']);
 
         Route::get('/histories', [UserHistoryController::class, 'getUserHistories']);

@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class VideoController extends Controller
 {
@@ -110,7 +111,15 @@ class VideoController extends Controller
      */
     public function showVideo(int $id): VideoResource
     {
-        $video = $this->videoService->showVideoWithHistory($id, Auth::user());
+
+        $user = null;
+
+        if ($token = request()->bearerToken()) {
+            $accessToken = PersonalAccessToken::findToken($token);
+            $user = $accessToken?->tokenable;
+        }
+
+        $video = $this->videoService->showVideoWithHistory($id, $user);
 
         return new VideoResource($video);
     }
