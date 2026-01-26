@@ -178,6 +178,46 @@ class AuthController extends Controller
     }
 
     /**
+     * ユーザー情報更新
+     */
+    public function update(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        // 匿名ユーザーは更新不可
+        if ($user->email === null) {
+            abort(403, '匿名ユーザーはユーザー情報を更新できません');
+        }
+
+        // バリデーション
+        $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                // 自分自身を除外して unique チェック
+                'unique:users,email,' . $user->id,
+            ],
+        ]);
+
+        // 更新
+        $user->update([
+            'name'  => $request->name,
+            'email' => $request->email,
+        ]);
+
+        return response()->json([
+            'message' => 'ユーザー情報を更新しました',
+            'user' => [
+                'id'       => $user->id,
+                'name'     => $user->name,
+                'email'    => $user->email,
+                'is_guest' => false,
+            ],
+        ]);
+    }
+
+    /**
      * パスワード変更(正規ユーザーのみ)
      */
     public function changePassword(Request $request): JsonResponse
