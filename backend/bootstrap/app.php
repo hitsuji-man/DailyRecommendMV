@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'dev.login' => App\Http\Middleware\DevAutoLogin::class,
+            'optional.auth' => \App\Http\Middleware\OptionalSanctumAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

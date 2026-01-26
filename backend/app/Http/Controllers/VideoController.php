@@ -111,16 +111,7 @@ class VideoController extends Controller
      */
     public function showVideo(int $id): VideoResource
     {
-
-        $user = null;
-
-        if ($token = request()->bearerToken()) {
-            // 任意認証(tokenあり:Userが取得できる。tokenなし:null)
-            $accessToken = PersonalAccessToken::findToken($token);
-            $user = $accessToken?->tokenable;
-        }
-
-        $video = $this->videoService->showVideoWithHistory($id, $user);
+        $video = $this->videoService->showVideoWithHistory($id, Auth::user());
 
         return new VideoResource($video);
     }
