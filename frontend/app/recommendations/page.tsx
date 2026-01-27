@@ -59,7 +59,7 @@ export default async function RecommendationsPage() {
             />
           </div>
 
-          {/* タイトル（YouTube風） */}
+          {/* タイトル */}
           <p className="text-xl font-semibold leading-snug mb-1">
             {recommendation.title}
           </p>
@@ -76,12 +76,12 @@ export default async function RecommendationsPage() {
 
             {/* チャンネル名 + 視聴回数 */}
             <div className="flex flex-col">
-              {/* チャンネル名（YouTube風） */}
+              {/* チャンネル名 */}
               <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
                 投稿者: {recommendation.channelTitle}
               </p>
 
-              {/* 視聴回数+投稿日時（YouTube風） */}
+              {/* 視聴回数+投稿日時 */}
               <p className="text-sm text-gray-500">
                 {recommendation.viewCount.toLocaleString()} 回視聴 ・{" "}
                 {formatRelativeDate(recommendation.publishedAt)}
