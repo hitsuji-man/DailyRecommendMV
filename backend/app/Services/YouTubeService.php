@@ -50,7 +50,7 @@ class YouTubeService
             // published_at フォーマットDATETIME型('Y-m-d H:i:s')
             // source_type "trend" を付与
             $trending = array_map(function($item){
-                $item['snippet']['publishedAt'] = Carbon::parse($item['snippet']['publishedAt'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s');
+                $item['snippet']['publishedAt'] = Carbon::parse($item['snippet']['publishedAt'])->timezone('Asia/Tokyo')->toIso8601String();
                 $item['sourceType'] = 'trend';
                 return $item;
             }, $trending);

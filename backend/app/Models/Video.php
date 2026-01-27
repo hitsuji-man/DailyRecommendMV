@@ -22,6 +22,7 @@ class Video extends Model
 
     protected $casts = [
         'thumbnail' => 'array',
+        'published_at' => 'datetime',
     ];
 
     public function artist() {
