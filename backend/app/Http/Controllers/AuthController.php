@@ -19,8 +19,6 @@ class AuthController extends Controller
      */
     public function anonymousLogin(Request $request): JsonResponse
     {
-        logger()->info('anonymous-login called', $request->all());
-
         $request->validate([
             'device_id' => ['required', 'uuid'],
         ]);
