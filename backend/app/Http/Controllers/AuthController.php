@@ -95,7 +95,9 @@ class AuthController extends Controller
     }
 
     /**
-     * ユーザー登録(昇格 or 新規)
+     * ユーザー登録
+     *  - 匿名ログイン済み: 正規ユーザーへ昇格
+     *  - 未ログイン: 新規ユーザー作成
      */
     public function register(Request $request): JsonResponse
     {
