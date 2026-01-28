@@ -1,5 +1,5 @@
-import RecommendationsPage from "./recommendations/page";
+import RecommendationsView from "./(main)/recommendations/RecommendationsView";
 
 export default function HomePage() {
-  return <RecommendationsPage />;
+  return <RecommendationsView />;
 }

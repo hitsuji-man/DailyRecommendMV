@@ -63,7 +63,7 @@ async function getMixedDailyVideos(): Promise<Recommendation[]> {
   return json.data;
 }
 
-export default async function RecommendationsPage() {
+export default async function RecommendationsView() {
   const [recommendation, mixedDailyVideos] = await Promise.all([
     getTodayRecommendations(),
     getMixedDailyVideos(),
