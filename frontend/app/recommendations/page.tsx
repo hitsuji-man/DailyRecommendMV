@@ -1,6 +1,8 @@
 import { API_BASE_URL } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
+import { Video } from "@/types/video";
+import VideoCard from "@/components/VideoCard";
 
 type RecommendationResponse = {
   data: Recommendation;
@@ -123,24 +125,9 @@ export default async function RecommendationsPage() {
         <h2 className="text-lg font-semibold mb-4">関連動画一覧</h2>
 
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {mixedDailyVideos.map((video) => (
-            <li key={video.id} className="flex flex-col">
-              <div className="aspect-video mb-2">
-                <iframe
-                  className="h-full w-full rounded-md"
-                  src={`https://www.youtube.com/embed/${video.videoId}`}
-                  title={video.title}
-                  allowFullScreen
-                />
-              </div>
-
-              <p className="text-sm font-medium leading-snug line-clamp-2">
-                {video.title}
-              </p>
-
-              <p className="text-xs text-gray-500">
-                投稿者: {video.channelTitle}
-              </p>
+          {mixedDailyVideos.map((video: Video) => (
+            <li key={video.id}>
+              <VideoCard video={video} />
             </li>
           ))}
         </ul>
