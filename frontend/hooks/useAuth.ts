@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import axios from "axios";
+import { getDeviceId } from "@/lib/device";
 
 export type User = {
   id: number;
@@ -18,19 +20,39 @@ export function useAuth() {
       setUser(res.data);
     } catch {
       setUser(null);
+      localStorage.removeItem("access_token");
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async () => {
-    await api.post("/logout");
-    setUser(null);
+    try {
+      await api.post("/logout");
+    } finally {
+      localStorage.removeItem("access_token");
+      setUser(null);
+    }
   };
 
   const anonymousLogin = async () => {
-    await api.post("/anonymous-login");
-    await fetchUser();
+    const deviceId = getDeviceId();
+
+    try {
+      // 匿名ログイン
+      const res = await api.post("/anonymous-login", {
+        device_id: deviceId,
+      });
+
+      // token を保存
+      localStorage.setItem("access_token", res.data.token);
+
+      await fetchUser();
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response?.data);
+      }
+    }
   };
 
   useEffect(() => {

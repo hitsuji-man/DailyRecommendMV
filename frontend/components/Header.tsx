@@ -24,7 +24,9 @@ export default function Header() {
         ) : (
           <>
             <Link href="/user">ユーザー情報</Link>
-            <button onClick={logout}>ログアウト</button>
+            <button onClick={logout} className="cursor-pointer">
+              ログアウト
+            </button>
           </>
         )}
       </nav>
