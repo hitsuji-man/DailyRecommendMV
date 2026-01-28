@@ -124,13 +124,15 @@ export default async function RecommendationsPage() {
       <div className="mt-10 max-w-5xl mx-auto">
         <h2 className="text-lg font-semibold mb-4">関連動画一覧</h2>
 
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {mixedDailyVideos.map((video: Video) => (
-            <li key={video.id}>
-              <VideoCard video={video} />
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 horizontal-scroll">
+          <ul className="flex gap-4 w-max">
+            {mixedDailyVideos.map((video: Video) => (
+              <li key={video.id} className="w-[320px] flex-shrink-0">
+                <VideoCard video={video} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

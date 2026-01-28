@@ -1,5 +1,6 @@
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import { Video } from "@/types/video";
+import Image from "next/image";
 
 type Props = {
   video: Video;
@@ -7,16 +8,15 @@ type Props = {
 
 export default function VideoCard({ video }: Props) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col cursor-pointer">
       {/* サムネイル */}
-      <div className="aspect-video mb-2">
-        <iframe
-          className="h-full w-full rounded-md"
-          src={`https://www.youtube.com/embed/${video.videoId}`}
-          title={video.title}
-          allowFullScreen
-        />
-      </div>
+      <Image
+        src={video.thumbnail.url}
+        alt={video.title}
+        width={320}
+        height={180}
+        className="rounded-md mb-2"
+      />
 
       {/* タイトル */}
       <p className="text-sm font-medium leading-snug line-clamp-2 mb-1">
