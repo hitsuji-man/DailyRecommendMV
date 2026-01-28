@@ -1,7 +1,6 @@
 import { API_BASE_URL } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
-import { Video } from "@/types/video";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
 
 type RecommendationResponse = {
