@@ -15,6 +15,8 @@ class DailyRecommendationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'              => $this->id
+                                ?? $this->video->id ?? null,
             'videoId'         => $this->youtube_id
                                 ?? $this->video->youtube_id ?? null,
             'title'           => $this->title

@@ -7,6 +7,7 @@ type RecommendationResponse = {
 };
 
 type Recommendation = {
+  id: number;
   videoId: string;
   title: string;
   description: string;
