@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -18,6 +19,8 @@ class AuthController extends Controller
      */
     public function anonymousLogin(Request $request): JsonResponse
     {
+        logger()->info('anonymous-login called', $request->all());
+
         $request->validate([
             'device_id' => ['required', 'uuid'],
         ]);
@@ -37,6 +40,9 @@ class AuthController extends Controller
 
         // トークンは「毎回新規」か「既存再利用」どちらでもOK
         $token = $user->createToken('anonymous')->plainTextToken;
+
+        // // Cookie認証:Laravelセッションログイン
+        // Auth::login($user);
 
         return response()->json([
             'token' => $token,
