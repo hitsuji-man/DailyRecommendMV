@@ -138,7 +138,9 @@ export default async function RecommendationsPage() {
                 {video.title}
               </p>
 
-              <p className="text-xs text-gray-500">{video.channelTitle}</p>
+              <p className="text-xs text-gray-500">
+                投稿者: {video.channelTitle}
+              </p>
             </li>
           ))}
         </ul>
