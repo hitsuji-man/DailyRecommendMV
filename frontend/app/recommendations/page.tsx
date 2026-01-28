@@ -25,6 +25,13 @@ type Recommendation = {
   recommendDate: string;
 };
 
+type MixedDailyResponse = {
+  data: Recommendation[];
+};
+
+/**
+ * 本日のおすすめ動画を取得
+ */
 async function getTodayRecommendations(): Promise<Recommendation> {
   const res = await fetch(`${API_BASE_URL}/api/v1/recommendations/today`, {
     // App Router ではこれが重要
@@ -39,14 +46,33 @@ async function getTodayRecommendations(): Promise<Recommendation> {
   return json.data;
 }
 
+/**
+ * ミックス動画リスト(トレンド+「Catch Up Japan」プレイリスト)を取得
+ */
+async function getMixedDailyVideos(): Promise<Recommendation[]> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/videos/mixed-daily`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch mixed daily videos");
+  }
+
+  const json: MixedDailyResponse = await res.json();
+  return json.data;
+}
+
 export default async function RecommendationsPage() {
-  const recommendation = await getTodayRecommendations();
+  const [recommendation, mixedDailyVideos] = await Promise.all([
+    getTodayRecommendations(),
+    getMixedDailyVideos(),
+  ]);
 
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold mb-4 text-center">今日のおすすめMV</h1>
 
-      {/* 画面中央に配置するラッパー */}
+      {/* ===上:メイン動画(おすすめMV)=== 画面中央に配置するラッパー */}
       <div className="flex justify-center">
         {/* iframeとpを同じ幅コンテナに入れる */}
         <div className="w-full max-w-3xl">
@@ -90,6 +116,32 @@ export default async function RecommendationsPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ===下: 関連動画一覧(mixed-daily)=== */}
+      <div className="mt-10 max-w-5xl mx-auto">
+        <h2 className="text-lg font-semibold mb-4">関連動画一覧</h2>
+
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {mixedDailyVideos.map((video) => (
+            <li key={video.id} className="flex flex-col">
+              <div className="aspect-video mb-2">
+                <iframe
+                  className="h-full w-full rounded-md"
+                  src={`https://www.youtube.com/embed/${video.videoId}`}
+                  title={video.title}
+                  allowFullScreen
+                />
+              </div>
+
+              <p className="text-sm font-medium leading-snug line-clamp-2">
+                {video.title}
+              </p>
+
+              <p className="text-xs text-gray-500">{video.channelTitle}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
