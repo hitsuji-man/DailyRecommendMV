@@ -2,7 +2,7 @@ import { API_BASE_URL } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import { Video } from "@/types/video";
-import VideoCard from "@/components/VideoCard";
+import HorizontalVideoList from "@/components/HorizontalVideoList";
 
 type RecommendationResponse = {
   data: Recommendation;
@@ -124,15 +124,7 @@ export default async function RecommendationsPage() {
       <div className="mt-10 max-w-5xl mx-auto">
         <h2 className="text-lg font-semibold mb-4">関連動画一覧</h2>
 
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 horizontal-scroll">
-          <ul className="flex gap-4 w-max">
-            {mixedDailyVideos.map((video: Video) => (
-              <li key={video.id} className="w-[320px] flex-shrink-0">
-                <VideoCard video={video} />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <HorizontalVideoList videos={mixedDailyVideos} />
       </div>
     </div>
   );
