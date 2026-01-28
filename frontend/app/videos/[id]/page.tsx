@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
+import VideoDescription from "@/components/VideoDescription";
 
 type Video = {
   id: number;
@@ -77,9 +78,7 @@ export default async function VideoDetailPage({
       </p>
 
       {/* 説明文 */}
-      <p className="text-sm whitespace-pre-line text-gray-700">
-        {video.description}
-      </p>
+      <VideoDescription description={video.description} />
     </div>
   );
 }
