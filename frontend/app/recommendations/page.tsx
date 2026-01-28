@@ -34,7 +34,7 @@ type MixedDailyResponse = {
  * 本日のおすすめ動画を取得
  */
 async function getTodayRecommendations(): Promise<Recommendation> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/recommendations/today`, {
+  const res = await fetch(`${API_BASE_URL}/recommendations/today`, {
     // App Router ではこれが重要
     cache: "no-store", // 常に最新を取得（おすすめは日替わり想定）
   });
@@ -51,7 +51,7 @@ async function getTodayRecommendations(): Promise<Recommendation> {
  * ミックス動画リスト(トレンド+「Catch Up Japan」プレイリスト)を取得
  */
 async function getMixedDailyVideos(): Promise<Recommendation[]> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/videos/mixed-daily`, {
+  const res = await fetch(`${API_BASE_URL}/videos/mixed-daily`, {
     cache: "no-store",
   });
 

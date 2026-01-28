@@ -23,7 +23,7 @@ type VideoResponse = {
 };
 
 async function getVideo(id: string): Promise<Video> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/videos/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/videos/${id}`, {
     cache: "no-store",
   });
 
