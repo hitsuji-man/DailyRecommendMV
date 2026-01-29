@@ -17,16 +17,9 @@ class UserFavoriteService
      */
     public function getUserFavorites(?User $user = null): Collection
     {
+        // お気に入り判定:ローカルスコープ呼び出し
         return UserFavorite::with([
-            'video' => function ($q) use ($user) {
-                $q->when($user, function ($q) use ($user) {
-                    $q->withCount([
-                        'userFavorites as is_favorite' => function ($q2) use ($user) {
-                            $q2->where('user_id', $user->id);
-                        }
-                    ]);
-                });
-            }
+            'video' => fn ($q) => $q->withIsFavorite($user)
         ])
         ->orderBy('id', 'desc')
         ->get();
