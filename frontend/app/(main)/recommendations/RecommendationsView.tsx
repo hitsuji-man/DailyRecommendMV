@@ -102,7 +102,7 @@ export default async function RecommendationsView() {
               className="rounded-full object-cover"
             />
 
-            {/* チャンネル名 + 視聴回数 */}
+            {/* チャンネル名 + 視聴回数 + 投稿日時 */}
             <div className="flex flex-col">
               {/* チャンネル名 */}
               <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
