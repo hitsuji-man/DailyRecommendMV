@@ -7,6 +7,7 @@ use App\Services\DailyRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class DailyRecommendationController extends Controller
 {
@@ -32,7 +33,7 @@ class DailyRecommendationController extends Controller
      */
     public function getDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): DailyRecommendationResource
     {
-        return new DailyRecommendationResource($dailyRecommendationService->pickDailyRecommendVideo());
+        return new DailyRecommendationResource($dailyRecommendationService->pickDailyRecommendVideo(Auth::user()));
     }
 
     /**
@@ -42,7 +43,7 @@ class DailyRecommendationController extends Controller
     public function saveDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): JsonResponse
     {
         // GET API(getDailyRecommendVideo())を先に呼んでも、POST API(saveDailyRecommendVideo())を先に呼んでも常に結果は同じ(冪等)で壊れない
-        $dailyRecommendationService->pickDailyRecommendVideo();
+        $dailyRecommendationService->pickDailyRecommendVideo(Auth::user());
 
         return response()->json([
             'status'  => 'success',

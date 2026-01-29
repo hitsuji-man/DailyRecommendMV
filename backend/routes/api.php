@@ -37,7 +37,9 @@ Route::prefix('v1')->group(function() {
         Route::post('/user/password', [AuthController::class, 'changePassword']);
     });
 
-    Route::get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
+    // 今日のおすすめMV(公開+任意認証)
+    Route::middleware('optional.auth')
+        ->get('/recommendations/today', [DailyRecommendationController::class, 'getDailyRecommendVideo']);
     // 管理者のみCRONでPOSTしたい
     Route::post('/recommendations/today', [DailyRecommendationController::class, 'saveDailyRecommendVideo']);
 

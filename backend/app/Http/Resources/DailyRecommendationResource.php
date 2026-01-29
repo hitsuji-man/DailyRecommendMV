@@ -38,6 +38,7 @@ class DailyRecommendationResource extends JsonResource
             'sourceType'      => $this->source_type
                                 ?? $this->video->source_type ?? null,
             'recommendDate'  => $this->recommend_date ?? null,
+            'isFavorite'   => (bool) ($this->is_favorite ?? false),
         ];
     }
 }
