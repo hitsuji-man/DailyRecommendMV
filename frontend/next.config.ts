@@ -8,9 +8,12 @@ const apiOrigin = process.env.NEXT_PUBLIC_API_ORIGIN;
 if (!apiOrigin) {
   throw new Error("NEXT_PUBLIC_API_ORIGIN is not defined");
 }
+// 許可先が複数ある場合の対処
+const extraConnectSrc =
+  process.env.NEXT_PUBLIC_EXTRA_CONNECT_SRC?.split(",") ?? [];
 
 // connect-src を配列で管理
-const connectSrc = ["'self'", apiOrigin];
+const connectSrc = ["'self'", apiOrigin, ...extraConnectSrc];
 
 const csp = `
   default-src 'self';
