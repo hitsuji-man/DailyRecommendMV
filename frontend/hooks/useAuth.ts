@@ -55,8 +55,14 @@ export function useAuth() {
     }
   };
 
+  // ログイン状態確認はtokenがある時だけ
   useEffect(() => {
-    fetchUser();
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      fetchUser(); // ← tokenがある時だけ
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   return {

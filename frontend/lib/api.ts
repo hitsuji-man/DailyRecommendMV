@@ -16,7 +16,12 @@ export const api = axios.create({
   },
 });
 
-// Authorization 自動付与
+/**
+ * ============================
+ * Request interceptor
+ * Authorization 自動付与
+ * ============================
+ */
 api.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("access_token");
@@ -26,3 +31,26 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+/**
+ * ============================
+ * Response interceptor
+ * 401 → トークンの失効。強制ログアウト
+ * ============================
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // トークン破棄
+      localStorage.removeItem("access_token");
+
+      // ログイン画面へ
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
