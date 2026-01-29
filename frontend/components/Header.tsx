@@ -9,22 +9,32 @@ export default function Header() {
   if (loading) return null; // or skeleton
 
   return (
-    <header className="flex justify-between p-4 border-b">
-      <Link href="/">MyApp</Link>
-
+    <header className="flex justify-between p-4 bg-gray-800">
+      <Link href="/" className="text-gray-100">
+        MyApp
+      </Link>
       <nav className="flex gap-4">
         {!user ? (
           <>
-            <button onClick={anonymousLogin} className="cursor-pointer">
+            <button
+              onClick={anonymousLogin}
+              className="text-gray-100 cursor-pointer"
+            >
               ゲストでログイン
             </button>
-            <Link href="/login">ログイン</Link>
-            <Link href="/register">登録</Link>
+            <Link href="/login" className="text-gray-100">
+              ログイン
+            </Link>
+            <Link href="/register" className="text-gray-100">
+              登録
+            </Link>
           </>
         ) : (
           <>
-            <Link href="/user">ユーザー情報</Link>
-            <button onClick={logout} className="cursor-pointer">
+            <Link href="/user" className="text-gray-100">
+              ユーザー情報
+            </Link>
+            <button onClick={logout} className="text-gray-100 cursor-pointer">
               ログアウト
             </button>
           </>
