@@ -30,15 +30,7 @@ class DailyRecommendationService
         // 既に今日の動画が保存されているか確認
         $existing = DailyRecommendation::where('recommend_date', $today)
             ->with([
-                'video' => function ($q) use ($user) {
-                    $q->when($user, function ($q2) use ($user) {
-                        $q2->withCount([
-                            'userFavorites as is_favorite' => function ($q3) use ($user) {
-                                $q3->where('user_id', $user->id);
-                            }
-                        ]);
-                    });
-                }
+                'video' => fn ($q) => $q->withIsFavorite($user)
             ])
             ->first();
 
@@ -55,13 +47,7 @@ class DailyRecommendationService
 
         // まだ保存されていなければ、ランダム抽選して取得
         $recommendVideo = Video::inRandomOrder()
-            ->when($user, function ($q) use ($user) {
-                $q->withCount([
-                    'userFavorites as is_favorite' => function ($q2) use ($user) {
-                        $q2->where('user_id', $user->id);
-                    }
-                ]);
-            })
+            ->withIsFavorite($user)
             ->first();
 
         // 直近1週間に同じMVを取得していた場合、それを除いて再度ランダム抽選
@@ -74,13 +60,7 @@ class DailyRecommendationService
             // 上記video_idリストを除いて再度ランダム取得
             $recommendVideo = Video::whereNotIn('id',$excludeVideoIds)
                 ->inRandomOrder()
-                ->when($user, function ($q) use ($user) {
-                    $q->withCount([
-                        'userFavorites as is_favorite' => function ($q2) use ($user) {
-                            $q2->where('user_id', $user->id);
-                        }
-                    ]);
-                })
+                ->withIsFavorite($user)
                 ->first();
         }
 
