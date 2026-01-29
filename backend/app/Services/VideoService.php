@@ -18,19 +18,12 @@ class VideoService
      */
     public function getMixedDailyList(?User $user = null): Collection
     {
-        // when句:ログイン中(withCountを追加)、未ログイン(何もしない)
         /**
-         * クエリの中身:userFavoritesリレーションより、ログインユーザーでレコードが存在(お気に入り済 count=1)、存在しない(未お気に入り count=0)
+         * ログイン中のお気に入り判定:ローカルスコープを呼び出し
          */
         return Video::query()
             ->orderBy('id', 'desc')
-            ->when($user, function ($q) use ($user) {
-                $q->withCount([
-                    'userFavorites as is_favorite' => function ($q2) use ($user) {
-                        $q2->where('user_id', $user->id);
-                    }
-                ]);
-            })
+            ->withIsFavorite($user)
             ->limit(50)
             ->get();
     }
@@ -41,18 +34,11 @@ class VideoService
      */
     public function showVideoWithHistory(int $videoId, ?User $user = null): Video
     {
-        // when句:ログイン中(withCountを追加)、未ログイン(何もしない)
         /**
-         * クエリの中身:userFavoritesリレーションより、ログインユーザーでレコードが存在(お気に入り済 count=1)、存在しない(未お気に入り count=0)
+         * ログイン中のお気に入り判定:ローカルスコープを呼び出し
          */
         $video = Video::query()
-            ->when($user, function ($q) use ($user) {
-                $q->withCount([
-                    'userFavorites as is_favorite' => function ($q2) use ($user) {
-                        $q2->where('user_id', $user->id);
-                    }
-                ]);
-            })
+            ->withIsFavorite($user)
             ->findOrFail($videoId);
 
         if ($user) {
