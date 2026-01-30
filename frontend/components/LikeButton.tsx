@@ -40,7 +40,7 @@ export default function LikeButton({ videoId, initialLiked }: Props) {
   return (
     <button
       onClick={handleClick}
-      className="flex items-center gap-1 text-sm"
+      className="flex items-center gap-1 text-sm cursor-pointer"
       disabled={liked}
     >
       <span className={liked ? "text-red-500" : "text-gray-400"}>

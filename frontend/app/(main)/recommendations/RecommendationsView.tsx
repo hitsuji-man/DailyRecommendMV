@@ -123,10 +123,12 @@ export default function RecommendationsView() {
 
             {/* 右側：いいね */}
             {recommendation.can_favorite && (
-              <LikeButton
-                videoId={recommendation.id}
-                initialLiked={recommendation.is_favorite}
-              />
+              <div className="ml-4">
+                <LikeButton
+                  videoId={recommendation.id}
+                  initialLiked={recommendation.is_favorite}
+                />
+              </div>
             )}
           </div>
         </div>
