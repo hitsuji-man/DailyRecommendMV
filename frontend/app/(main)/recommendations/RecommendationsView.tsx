@@ -121,7 +121,7 @@ export default function RecommendationsView() {
               </div>
             </div>
 
-            {/* 右側：いいね */}
+            {/* 右側：いいねボタン(ログイン時のみ) */}
             {recommendation.can_favorite && (
               <div className="ml-4">
                 <LikeButton
