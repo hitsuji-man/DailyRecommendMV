@@ -96,7 +96,8 @@ export default function RecommendationsView() {
             {recommendation.title}
           </p>
 
-          <div className="flex items-center justiy-between mt-2">
+          {/* 投稿者 + 視聴回数 + 投稿日 + いいねボタン */}
+          <div className="flex items-center mt-2">
             {/* 左側：チャンネル情報 */}
             <div className="flex items-center gap-3">
               {/* チャンネルサムネイル（擬似） */}
@@ -113,7 +114,7 @@ export default function RecommendationsView() {
                 <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
                   投稿者: {recommendation.channelTitle}
                 </p>
-                {/* 視聴回数+投稿日時 */}
+                {/* 視聴回数 + 投稿日時 */}
                 <p className="text-sm text-gray-500">
                   {recommendation.viewCount.toLocaleString()} 回視聴 ・{" "}
                   {formatRelativeDate(recommendation.publishedAt)}
