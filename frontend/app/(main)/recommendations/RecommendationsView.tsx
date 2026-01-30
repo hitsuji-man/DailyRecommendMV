@@ -33,7 +33,7 @@ type Recommendation = {
   likeCount: number;
   sourceType: "trend" | "playlist";
   recommendDate: string;
-  is_favorite: boolean;
+  isFavorite: boolean;
   can_favorite: boolean;
 };
 
@@ -126,7 +126,7 @@ export default function RecommendationsView() {
               <div className="ml-4">
                 <LikeButton
                   videoId={recommendation.id}
-                  initialLiked={recommendation.is_favorite}
+                  initialLiked={recommendation.isFavorite}
                 />
               </div>
             )}

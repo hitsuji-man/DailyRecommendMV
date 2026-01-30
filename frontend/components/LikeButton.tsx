@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { API_BASE_URL } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
+import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
 
 type Props = {
   videoId: number;
@@ -12,26 +14,27 @@ export default function LikeButton({ videoId, initialLiked }: Props) {
   const [liked, setLiked] = useState(initialLiked);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setLiked(initialLiked);
+  }, [initialLiked]);
+
   const handleClick = async () => {
     if (loading) return;
 
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/favorites/${videoId}`, {
-        method: "POST",
-        credentials: "include", // ← sanctumなら必須
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to like");
+      if (liked) {
+        await api.delete(`/favorites/${videoId}`);
+        setLiked(false);
+      } else {
+        await api.post(`/favorites/${videoId}`);
+        setLiked(true);
       }
-
-      // 成功したら即UI反映
-      setLiked(true);
     } catch (e) {
       console.error(e);
-      alert("いいねに失敗しました");
+      alert("いいねの更新に失敗しました");
+      throw new Error("Failed to like");
     } finally {
       setLoading(false);
     }
@@ -40,12 +43,14 @@ export default function LikeButton({ videoId, initialLiked }: Props) {
   return (
     <button
       onClick={handleClick}
-      className="flex items-center gap-1 text-sm cursor-pointer"
-      disabled={liked}
+      className="flex items-center gap-1 text-sm cursor-pointer group"
+      disabled={loading}
     >
-      <span className={liked ? "text-red-500" : "text-gray-400"}>
-        {liked ? "❤️" : "🤍"}
-      </span>
+      {liked ? (
+        <HeartSolid className="w-5 h-5 text-red-500 transition-transform group-hover:scale-110" />
+      ) : (
+        <HeartOutline className="w-5 h-5 text-gray-800 transition-transform group-hover:scale-110" />
+      )}
       <span>{liked ? "いいね済み" : "いいね"}</span>
     </button>
   );
