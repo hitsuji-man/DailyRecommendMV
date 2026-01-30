@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
 
 export default function Header() {
+  // authVersionは未使用。購読のみ
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, authVersion, loading, logout, anonymousLogin } =
     useAuthContext();
 

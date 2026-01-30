@@ -14,6 +14,8 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authVersion, setAuthVersion] = useState(0);
+  // isLoggingOutは未使用
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const refetchUser = useCallback(async () => {
