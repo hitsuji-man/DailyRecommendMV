@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function Header() {
-  const { user, loading, logout, anonymousLogin } = useAuth();
+  const { user, authVersion, loading, logout, anonymousLogin } =
+    useAuthContext();
 
   if (loading) return null; // or skeleton
 

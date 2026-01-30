@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import axios from "axios";
 import { getDeviceId } from "@/lib/device";
@@ -14,8 +14,9 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authVersion, setAuthVersion] = useState(0);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const fetchUser = async () => {
+  const refetchUser = useCallback(async () => {
     try {
       const res = await api.get("/user");
       setUser(res.data);
@@ -25,15 +26,17 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const logout = async () => {
+    setIsLoggingOut(true);
     try {
       await api.post("/logout");
     } finally {
       localStorage.removeItem("access_token");
       setUser(null);
       setAuthVersion((v) => v + 1);
+      setIsLoggingOut(false);
     }
   };
 
@@ -49,7 +52,6 @@ export function useAuth() {
       // token を保存
       localStorage.setItem("access_token", res.data.token);
 
-      await fetchUser();
       setAuthVersion((v) => v + 1);
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -61,12 +63,12 @@ export function useAuth() {
   // ログイン状態確認はtokenがある時だけ
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (token) {
-      fetchUser(); // ← tokenがある時だけ
-    } else {
+    if (!token) {
       setLoading(false);
+      return;
     }
-  }, []);
+    refetchUser();
+  }, [refetchUser]);
 
   return {
     user,
@@ -74,6 +76,6 @@ export function useAuth() {
     authVersion,
     logout,
     anonymousLogin,
-    refetchUser: fetchUser,
+    refetchUser,
   };
 }

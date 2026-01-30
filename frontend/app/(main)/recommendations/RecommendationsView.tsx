@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, API_BASE_URL } from "@/lib/api";
+import { api } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
 import LikeButton from "@/components/LikeButton";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/context/AuthContext";
 
 type RecommendationResponse = {
   data: Recommendation;
@@ -45,7 +45,7 @@ export default function RecommendationsView() {
     [],
   );
   const [loading, setLoading] = useState(true);
-  const { user, loading: authLoading, authVersion } = useAuth();
+  const { loading: authLoading, authVersion } = useAuthContext();
 
   useEffect(() => {
     if (authLoading) return;

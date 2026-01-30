@@ -41,14 +41,16 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // トークン破棄
-      localStorage.removeItem("access_token");
+    const status = error.response?.status;
 
-      // ログイン画面へ
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
+    const hasToken = !!localStorage.getItem("access_token");
+
+    // ★ トークンが無い状態の 401 は「正常」
+    if (status === 401 && hasToken) {
+      // トークンの破棄
+      localStorage.removeItem("access_token");
+      // ログイン画面に遷移
+      window.location.href = "/login";
     }
 
     return Promise.reject(error);
