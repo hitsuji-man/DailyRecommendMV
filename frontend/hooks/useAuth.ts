@@ -13,6 +13,7 @@ export type User = {
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authVersion, setAuthVersion] = useState(0);
 
   const fetchUser = async () => {
     try {
@@ -32,6 +33,7 @@ export function useAuth() {
     } finally {
       localStorage.removeItem("access_token");
       setUser(null);
+      setAuthVersion((v) => v + 1);
     }
   };
 
@@ -48,6 +50,7 @@ export function useAuth() {
       localStorage.setItem("access_token", res.data.token);
 
       await fetchUser();
+      setAuthVersion((v) => v + 1);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         console.log(e.response?.data);
@@ -68,6 +71,7 @@ export function useAuth() {
   return {
     user,
     loading,
+    authVersion,
     logout,
     anonymousLogin,
     refetchUser: fetchUser,

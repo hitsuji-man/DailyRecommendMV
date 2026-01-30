@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class VideoResource extends JsonResource
 {
@@ -27,6 +28,7 @@ class VideoResource extends JsonResource
             'likeCount'    => $this->like_count ?? null,
             'sourceType'   => $this->source_type ?? null,
             'isFavorite'   => (bool) ($this->is_favorite ?? false),
+            'can_favorite' => (bool) $request->user() ?? null,
         ];
     }
 }

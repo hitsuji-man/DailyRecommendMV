@@ -1,10 +1,19 @@
-import { API_BASE_URL } from "@/lib/api";
+"use client";
+
+import { useEffect, useState } from "react";
+import { api, API_BASE_URL } from "@/lib/api";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
+import LikeButton from "@/components/LikeButton";
+import { useAuth } from "@/hooks/useAuth";
 
 type RecommendationResponse = {
   data: Recommendation;
+};
+
+type MixedDailyResponse = {
+  data: Recommendation[];
 };
 
 type Recommendation = {
@@ -24,50 +33,45 @@ type Recommendation = {
   likeCount: number;
   sourceType: "trend" | "playlist";
   recommendDate: string;
+  is_favorite: boolean;
+  can_favorite: boolean;
 };
 
-type MixedDailyResponse = {
-  data: Recommendation[];
-};
+export default function RecommendationsView() {
+  const [recommendation, setRecommendation] = useState<Recommendation | null>(
+    null,
+  );
+  const [mixedDailyVideos, setMixedDailyVideos] = useState<Recommendation[]>(
+    [],
+  );
+  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading, authVersion } = useAuth();
 
-/**
- * 本日のおすすめ動画を取得
- */
-async function getTodayRecommendations(): Promise<Recommendation> {
-  const res = await fetch(`${API_BASE_URL}/recommendations/today`, {
-    // App Router ではこれが重要
-    cache: "no-store", // 常に最新を取得（おすすめは日替わり想定）
-  });
+  useEffect(() => {
+    if (authLoading) return;
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch recommendations");
+    const fetchData = async () => {
+      try {
+        const [todayRes, mixedRes] = await Promise.all([
+          api.get<RecommendationResponse>("/recommendations/today"),
+          api.get<MixedDailyResponse>("/videos/mixed-daily"),
+        ]);
+
+        setRecommendation(todayRes.data.data);
+        setMixedDailyVideos(mixedRes.data.data);
+      } catch (e) {
+        console.error("Failed to fetch recommendations", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [authVersion, authLoading]);
+
+  if (loading || !recommendation) {
+    return <div className="p-6 text-center">読み込み中...</div>;
   }
-
-  const json: RecommendationResponse = await res.json();
-  return json.data;
-}
-
-/**
- * ミックス動画リスト(トレンド+「Catch Up Japan」プレイリスト)を取得
- */
-async function getMixedDailyVideos(): Promise<Recommendation[]> {
-  const res = await fetch(`${API_BASE_URL}/videos/mixed-daily`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch mixed daily videos");
-  }
-
-  const json: MixedDailyResponse = await res.json();
-  return json.data;
-}
-
-export default async function RecommendationsView() {
-  const [recommendation, mixedDailyVideos] = await Promise.all([
-    getTodayRecommendations(),
-    getMixedDailyVideos(),
-  ]);
 
   return (
     <div className="p-6">
@@ -92,29 +96,38 @@ export default async function RecommendationsView() {
             {recommendation.title}
           </p>
 
-          <div className="flex items-center gap-3">
-            {/* チャンネルサムネイル（擬似） */}
-            <Image
-              src={recommendation.thumbnail.url}
-              alt={recommendation.channelTitle}
-              width={36}
-              height={36}
-              className="rounded-full object-cover"
-            />
-
-            {/* チャンネル名 + 視聴回数 + 投稿日時 */}
-            <div className="flex flex-col">
-              {/* チャンネル名 */}
-              <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
-                投稿者: {recommendation.channelTitle}
-              </p>
-
-              {/* 視聴回数+投稿日時 */}
-              <p className="text-sm text-gray-500">
-                {recommendation.viewCount.toLocaleString()} 回視聴 ・{" "}
-                {formatRelativeDate(recommendation.publishedAt)}
-              </p>
+          <div className="flex items-center justiy-between mt-2">
+            {/* 左側：チャンネル情報 */}
+            <div className="flex items-center gap-3">
+              {/* チャンネルサムネイル（擬似） */}
+              <Image
+                src={recommendation.thumbnail.url}
+                alt={recommendation.channelTitle}
+                width={36}
+                height={36}
+                className="rounded-full object-cover"
+              />
+              {/* チャンネル名 + 視聴回数 + 投稿日時 */}
+              <div className="flex flex-col">
+                {/* チャンネル名 */}
+                <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
+                  投稿者: {recommendation.channelTitle}
+                </p>
+                {/* 視聴回数+投稿日時 */}
+                <p className="text-sm text-gray-500">
+                  {recommendation.viewCount.toLocaleString()} 回視聴 ・{" "}
+                  {formatRelativeDate(recommendation.publishedAt)}
+                </p>
+              </div>
             </div>
+
+            {/* 右側：いいね */}
+            {recommendation.can_favorite && (
+              <LikeButton
+                videoId={recommendation.id}
+                initialLiked={recommendation.is_favorite}
+              />
+            )}
           </div>
         </div>
       </div>

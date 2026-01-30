@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class DailyRecommendationResource extends JsonResource
 {
@@ -39,6 +40,7 @@ class DailyRecommendationResource extends JsonResource
                                 ?? $this->video->source_type ?? null,
             'recommendDate'  => $this->recommend_date ?? null,
             'isFavorite'   => (bool) ($this->is_favorite ?? false),
+            'can_favorite' => (bool) $request->user() ?? null,
         ];
     }
 }
