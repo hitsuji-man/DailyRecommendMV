@@ -74,20 +74,20 @@ export default function VideoDetailView({ videoId }: { videoId: string }) {
       <h1 className="text-xl font-semibold mb-2">{video.title}</h1>
 
       {/* 投稿者 + 視聴回数 + 投稿日 + いいねボタン */}
-      <div className="flex items-center mb-3">
+      <div className="flex items-center mb-3 flex-nowrap">
         {/* 左側: チャンネル情報 */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* チャンネルサムネイル(擬似) */}
           <Image
             src={video.thumbnail.url}
             alt={video.channelTitle}
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-full object-cover shrink-0"
           />
           {/* チャンネル名 + 視聴回数 + 投稿日時 */}
-          <div className="flex flex-col">
-            <p className="text-sm text-gray-700">
+          <div className="flex flex-col min-w-0">
+            <p className="text-sm text-gray-700 hover:text-gray-900">
               投稿者: {video.channelTitle}
             </p>
             {/* 視聴回数 + 投稿日時 */}
@@ -100,7 +100,7 @@ export default function VideoDetailView({ videoId }: { videoId: string }) {
 
         {/* 右側：いいねボタン(ログイン時のみ) */}
         {video.canFavorite && (
-          <div className="ml-4">
+          <div className="ml-4 shrink-0 whitespace-nowrap">
             <LikeButton videoId={video.id} initialLiked={video.isFavorite} />
           </div>
         )}

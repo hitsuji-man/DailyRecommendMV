@@ -100,21 +100,21 @@ export default function RecommendationsView() {
           </p>
 
           {/* 投稿者 + 視聴回数 + 投稿日 + いいねボタン */}
-          <div className="flex items-center mt-2">
+          <div className="flex items-center mt-2 flex-nowrap">
             {/* 左側：チャンネル情報 */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               {/* チャンネルサムネイル（擬似） */}
               <Image
                 src={recommendation.thumbnail.url}
                 alt={recommendation.channelTitle}
                 width={36}
                 height={36}
-                className="rounded-full object-cover"
+                className="rounded-full object-cover shrink-0"
               />
               {/* チャンネル名 + 視聴回数 + 投稿日時 */}
-              <div className="flex flex-col">
+              <div className="flex flex-col min-w-0">
                 {/* チャンネル名 */}
-                <p className="text-base text-gray-700 hover:text-gray-900 cursor-pointer">
+                <p className="text-base text-gray-700 hover:text-gray-900">
                   投稿者: {recommendation.channelTitle}
                 </p>
                 {/* 視聴回数 + 投稿日時 */}
@@ -127,7 +127,7 @@ export default function RecommendationsView() {
 
             {/* 右側：いいねボタン(ログイン時のみ) */}
             {recommendation.canFavorite && (
-              <div className="ml-4">
+              <div className="ml-4 shrink-0 whitespace-nowrap">
                 <LikeButton
                   videoId={recommendation.id}
                   initialLiked={recommendation.isFavorite}
