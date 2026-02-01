@@ -35,6 +35,9 @@ type Recommendation = {
   recommendDate: string;
   isFavorite: boolean;
   canFavorite: boolean;
+  canViewRecommendations: boolean;
+  canViewFavorites: boolean;
+  canViewHistories: boolean;
 };
 
 export default function RecommendationsView() {

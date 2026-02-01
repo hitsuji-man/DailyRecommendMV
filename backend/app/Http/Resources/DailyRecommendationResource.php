@@ -41,6 +41,9 @@ class DailyRecommendationResource extends JsonResource
             'recommendDate'  => $this->recommend_date ?? null,
             'isFavorite'   => (bool) ($this->is_favorite ?? false),
             'canFavorite' => (bool) ($request->user() !== null),
+            'canViewRecommendations' => (bool) ($request->user() !== null),
+            'canViewFavorites' => (bool) ($request->user() !== null),
+            'canViewHistories' => (bool) ($request->user() !== null),
         ];
     }
 }
