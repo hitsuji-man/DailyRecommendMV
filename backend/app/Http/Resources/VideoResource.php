@@ -28,7 +28,7 @@ class VideoResource extends JsonResource
             'likeCount'    => $this->like_count ?? null,
             'sourceType'   => $this->source_type ?? null,
             'isFavorite'   => (bool) ($this->is_favorite ?? false),
-            'can_favorite' => (bool) $request->user() ?? null,
+            'canFavorite' => (bool) ($request->user() !== null),
         ];
     }
 }

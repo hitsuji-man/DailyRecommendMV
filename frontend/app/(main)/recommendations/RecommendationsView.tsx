@@ -34,7 +34,7 @@ type Recommendation = {
   sourceType: "trend" | "playlist";
   recommendDate: string;
   isFavorite: boolean;
-  can_favorite: boolean;
+  canFavorite: boolean;
 };
 
 export default function RecommendationsView() {
@@ -123,7 +123,7 @@ export default function RecommendationsView() {
             </div>
 
             {/* 右側：いいねボタン(ログイン時のみ) */}
-            {recommendation.can_favorite && (
+            {recommendation.canFavorite && (
               <div className="ml-4">
                 <LikeButton
                   videoId={recommendation.id}

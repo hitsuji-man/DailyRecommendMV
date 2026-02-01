@@ -24,7 +24,7 @@ type Video = {
   likeCount: number;
   sourceType: "trend" | "playlist";
   isFavorite: boolean;
-  can_favorite: boolean;
+  canFavorite: boolean;
 };
 
 type VideoResponse = {
@@ -99,7 +99,7 @@ export default function VideoDetailView({ videoId }: { videoId: string }) {
         </div>
 
         {/* 右側：いいねボタン(ログイン時のみ) */}
-        {video.can_favorite && (
+        {video.canFavorite && (
           <div className="ml-4">
             <LikeButton videoId={video.id} initialLiked={video.isFavorite} />
           </div>

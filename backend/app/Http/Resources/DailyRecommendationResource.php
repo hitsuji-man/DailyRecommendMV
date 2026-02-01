@@ -40,7 +40,7 @@ class DailyRecommendationResource extends JsonResource
                                 ?? $this->video->source_type ?? null,
             'recommendDate'  => $this->recommend_date ?? null,
             'isFavorite'   => (bool) ($this->is_favorite ?? false),
-            'can_favorite' => (bool) $request->user() ?? null,
+            'canFavorite' => (bool) ($request->user() !== null),
         ];
     }
 }
