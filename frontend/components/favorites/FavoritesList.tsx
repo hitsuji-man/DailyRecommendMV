@@ -25,6 +25,17 @@ export default function FavoritesList() {
 
   if (loading) return <div className="p-6 text-center">読み込み中...</div>;
 
+  // お気に入りが空(0件)の時の表示
+  if (videos.length === 0) {
+    return (
+      <div className="py-16 text-center text-gray-500">
+        <p className="text-lg">お気に入りはまだありません</p>
+        <p className="mt-2 text-sm">
+          気になる動画を見つけたら ❤️ を押してみましょう
+        </p>
+      </div>
+    );
+  }
   return (
     <ul className="space-y-4">
       {videos.map((video) => (
