@@ -21,7 +21,10 @@ export default function FavoritesList() {
   return (
     <ul className="space-y-4">
       {videos.map((video) => (
-        <FavoriteVideoItem key={video.videoDbId} video={video} />
+        <FavoriteVideoItem
+          key={`${video.userId}-${video.videoDbId}`}
+          video={video}
+        />
       ))}
     </ul>
   );
