@@ -15,12 +15,13 @@ class UserFavoriteService
      * お気に入り一覧を取得する
      * @return Collection
      */
-    public function getUserFavorites(?User $user = null): Collection
+    public function getUserFavorites(User $user): Collection
     {
         // お気に入り判定:ローカルスコープ呼び出し
         return UserFavorite::with([
             'video' => fn ($q) => $q->withIsFavorite($user)
         ])
+        ->where('user_id', $user->id)
         ->orderBy('id', 'desc')
         ->get();
     }

@@ -23,9 +23,10 @@ class UserFavoriteController extends Controller
     /**
      * お気に入り一覧を取得する
      */
-    public function getUserFavorites()
+    public function getUserFavorites(Request $request)
     {
-        $userFavorites = $this->userFavoriteService->getUserFavorites(Auth::user());
+        $user = $request->user();
+        $userFavorites = $this->userFavoriteService->getUserFavorites($user);
         return UserFavoriteResource::collection($userFavorites);
     }
 
