@@ -8,9 +8,14 @@ import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
 type Props = {
   videoId: number;
   initialLiked: boolean;
+  onUnfavorite?: () => void;
 };
 
-export default function LikeButton({ videoId, initialLiked }: Props) {
+export default function LikeButton({
+  videoId,
+  initialLiked,
+  onUnfavorite,
+}: Props) {
   const [liked, setLiked] = useState(initialLiked);
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +32,9 @@ export default function LikeButton({ videoId, initialLiked }: Props) {
       if (liked) {
         await api.delete(`/favorites/${videoId}`);
         setLiked(false);
+
+        // 解除成功後に親に通知
+        onUnfavorite?.();
       } else {
         await api.post(`/favorites/${videoId}`);
         setLiked(true);

@@ -6,9 +6,10 @@ import Link from "next/link";
 
 type Props = {
   video: FavoriteVideo;
+  onUnfavorite: (userId: number, videoDbId: number) => void;
 };
 
-export default function FavoriteVideoItem({ video }: Props) {
+export default function FavoriteVideoItem({ video, onUnfavorite }: Props) {
   return (
     <li className="flex gap-4 items-start py-2">
       {/* 左カラム：サムネイル + いいね */}
@@ -24,7 +25,11 @@ export default function FavoriteVideoItem({ video }: Props) {
         </Link>
 
         {/* サムネ直下のいいね */}
-        <LikeButton videoId={video.videoDbId} initialLiked={video.isFavorite} />
+        <LikeButton
+          videoId={video.videoDbId}
+          initialLiked={video.isFavorite}
+          onUnfavorite={() => onUnfavorite(video.userId, video.videoDbId)}
+        />
       </div>
 
       {/* 右カラム：動画情報 */}

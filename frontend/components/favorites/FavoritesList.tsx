@@ -16,6 +16,13 @@ export default function FavoritesList() {
       .finally(() => setLoading(false));
   }, []);
 
+  // お気に入り解除したら即一覧から消す(解除されたその1件以外を残す)
+  const handleUnfavorite = (userId: number, videoDbId: number) => {
+    setVideos((prev) =>
+      prev.filter((v) => !(v.userId === userId && v.videoDbId === videoDbId)),
+    );
+  };
+
   if (loading) return <div className="p-6 text-center">読み込み中...</div>;
 
   return (
@@ -24,6 +31,7 @@ export default function FavoritesList() {
         <FavoriteVideoItem
           key={`${video.userId}-${video.videoDbId}`}
           video={video}
+          onUnfavorite={handleUnfavorite}
         />
       ))}
     </ul>
