@@ -16,6 +16,7 @@ class UserFavoriteResource extends JsonResource
     {
         return [
             'userId'          => $this->user_id ?? null,
+            'videoDbId'       => $this->video->id ?? null,
             'videoId'         => $this->video->youtube_id ?? null,
             'title'           => $this->video->title ?? null,
             'description'     => $this->video->description ?? null,
@@ -27,6 +28,7 @@ class UserFavoriteResource extends JsonResource
             'likeCount'       => $this->video->like_count ?? null,
             'sourceType'      => $this->video->source_type ?? null,
             'isFavorite'      => (bool) ($this->video->is_favorite ?? false),
+            'canViewFavorites' => (bool) ($request->user() !== null),
         ];
     }
 }
