@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Recommendation } from "@/types/Recommendation";
-import Image from "next/image";
 import axios from "axios";
-import { formatRelativeDate } from "@/lib/formatRelativeDate";
+import RecommendationCard from "@/components/RecommendationCard";
 
 export default function RecommendationsPage() {
   const router = useRouter();
@@ -34,7 +33,7 @@ export default function RecommendationsPage() {
   }, [router]);
 
   if (loading) {
-    return <p>読み込み中...</p>;
+    return <p className="p-6 text-center">読み込み中...</p>;
   }
 
   return (
@@ -46,36 +45,10 @@ export default function RecommendationsPage() {
       ) : (
         <ul className="space-y-4">
           {recommendations.map((recommendation) => (
-            <li key={recommendation.id} className="flex gap-3 items-start">
-              {/* サムネイル */}
-              <div className="flex-shrink-0">
-                <Image
-                  src={recommendation.thumbnail.url}
-                  alt={recommendation.title}
-                  width={160}
-                  height={90}
-                  className="rounded-md mb-2"
-                />
-              </div>
-              {/* タイトル + チャンネル名 + 視聴回数 + 投稿日時 */}
-              <div className="flex-1 min-w-0">
-                {/* タイトル */}
-                <p className="font-large text-sm sm:text-base line-clamp-3">
-                  {recommendation.title}
-                </p>
-
-                {/* チャンネル名(投稿者) */}
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                  投稿者: {recommendation.channelTitle}
-                </p>
-
-                {/* 視聴回数 + 投稿日時 */}
-                <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                  {recommendation.viewCount.toLocaleString()} 回視聴 ・{" "}
-                  {formatRelativeDate(recommendation.publishedAt)}
-                </p>
-              </div>
-            </li>
+            <RecommendationCard
+              key={recommendation.id}
+              recommendation={recommendation}
+            />
           ))}
         </ul>
       )}
