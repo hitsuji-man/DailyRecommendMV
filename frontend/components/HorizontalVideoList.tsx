@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import VideoCard from "@/components/VideoCard";
-import { Video } from "@/types/video";
+import { Video } from "@/types/Video";
 
 type Props = {
   videos: Video[];

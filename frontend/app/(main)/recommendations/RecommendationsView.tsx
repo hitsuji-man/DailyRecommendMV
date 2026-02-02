@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { Recommendation } from "@/types/Recommendation";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
@@ -14,30 +15,6 @@ type RecommendationResponse = {
 
 type MixedDailyResponse = {
   data: Recommendation[];
-};
-
-type Recommendation = {
-  id: number;
-  videoId: string;
-  title: string;
-  description: string;
-  channelId: string;
-  channelTitle: string;
-  thumbnail: {
-    url: string;
-    width: number;
-    height: number;
-  };
-  publishedAt: string;
-  viewCount: number;
-  likeCount: number;
-  sourceType: "trend" | "playlist";
-  recommendDate: string;
-  isFavorite: boolean;
-  canFavorite: boolean;
-  canViewRecommendations: boolean;
-  canViewFavorites: boolean;
-  canViewHistories: boolean;
 };
 
 export default function RecommendationsView() {

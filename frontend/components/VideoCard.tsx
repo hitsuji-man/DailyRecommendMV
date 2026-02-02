@@ -1,5 +1,5 @@
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
-import { Video } from "@/types/video";
+import { Video } from "@/types/Video";
 import Image from "next/image";
 import Link from "next/link";
 
