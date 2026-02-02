@@ -51,10 +51,11 @@ export default function RecommendationsPage() {
               <Image
                 src={recommendation.thumbnail.url}
                 alt={recommendation.title}
-                width={320}
-                height={180}
+                width={160}
+                height={90}
                 className="rounded-md mb-2"
               />
+              {/* タイトル + チャンネル名 + 視聴回数 + 投稿日時 */}
               <div>
                 <p className="font-medium">{recommendation.title}</p>
                 <p className="text-sm text-gray-600">
