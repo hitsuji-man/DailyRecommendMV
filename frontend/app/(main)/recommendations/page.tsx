@@ -1,26 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Recommendation } from "@/types/Recommendation";
 import axios from "axios";
 import RecommendationCard from "@/components/RecommendationCard";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export default function RecommendationsPage() {
-  const router = useRouter();
+  const { user, loading: authLoading } = useRequireAuth();
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user) return; // 未ログイン時は叩かない
+
     const fetchRecommendations = async () => {
       try {
         const res = await api.get("/recommendations");
         setRecommendations(res.data.data);
       } catch (e) {
         if (axios.isAxiosError(e) && e.response?.status === 401) {
-          router.replace("/login");
+          // 念のため（基本は useRequireAuth が拾う）
           return;
         }
         console.error(e);
@@ -30,9 +32,9 @@ export default function RecommendationsPage() {
     };
 
     fetchRecommendations();
-  }, [router]);
+  }, [user]);
 
-  if (loading) {
+  if (authLoading || loading) {
     return <p className="p-6 text-center">読み込み中...</p>;
   }
 
