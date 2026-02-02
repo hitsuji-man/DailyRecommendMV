@@ -123,15 +123,37 @@ export default function RecommendationsView() {
         <HorizontalVideoList videos={mixedDailyVideos} />
       </div>
 
-      {/* ログイン時のみ表示するボタン(おすすめMV履歴、お気に入り、視聴履歴) */}
-      {recommendation.canViewRecommendations && (
-        <div className="mt-6 flex justify-center">
-          <Link
-            href="/recommendations"
-            className="px-4 py-2 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
-          >
-            おすすめMV履歴
-          </Link>
+      {/* ログイン時のみ表示するボタン(おすすめMV履歴、お気に入り一覧、視聴履歴) */}
+      {(recommendation.canViewRecommendations ||
+        recommendation.canViewFavorites ||
+        recommendation.canViewHistories) && (
+        <div className="mt-6 flex justify-center gap-3">
+          {recommendation.canViewRecommendations && (
+            <Link
+              href="/recommendations"
+              className="px-4 py-2 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
+            >
+              おすすめMV履歴
+            </Link>
+          )}
+
+          {recommendation.canViewFavorites && (
+            <Link
+              href="/favorites"
+              className="px-4 py-2 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
+            >
+              お気に入り一覧
+            </Link>
+          )}
+
+          {recommendation.canViewHistories && (
+            <Link
+              href="/histories"
+              className="px-4 py-2 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
+            >
+              視聴履歴
+            </Link>
+          )}
         </div>
       )}
     </div>
