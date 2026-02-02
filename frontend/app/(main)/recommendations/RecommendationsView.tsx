@@ -8,6 +8,7 @@ import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
 import LikeButton from "@/components/LikeButton";
 import { useAuthContext } from "@/context/AuthContext";
+import Link from "next/link";
 
 type RecommendationResponse = {
   data: Recommendation;
@@ -121,6 +122,18 @@ export default function RecommendationsView() {
 
         <HorizontalVideoList videos={mixedDailyVideos} />
       </div>
+
+      {/* ログイン時のみ表示するボタン(おすすめMV履歴、お気に入り、視聴履歴) */}
+      {recommendation.canViewRecommendations && (
+        <div className="mt-6 flex justify-center">
+          <Link
+            href="/recommendations"
+            className="px-4 py-2 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
+          >
+            おすすめMV履歴
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

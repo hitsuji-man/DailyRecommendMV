@@ -43,6 +43,11 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
 
+    // サーバー(コンポーネント)では何もしない
+    if (typeof window === "undefined") {
+      return Promise.reject(error);
+    }
+
     const hasToken = !!localStorage.getItem("access_token");
 
     // ★ トークンが無い状態の 401 は「正常」
