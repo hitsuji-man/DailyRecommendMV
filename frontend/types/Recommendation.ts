@@ -1,6 +1,7 @@
 export type Recommendation = {
   id: number;
-  videoId: string;
+  videoDbId: number; // 自分の動画ID
+  videoId: string; // YouTube ID
   title: string;
   description: string;
   channelId: string;
