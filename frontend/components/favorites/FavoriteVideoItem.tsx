@@ -11,18 +11,23 @@ type Props = {
 export default function FavoriteVideoItem({ video }: Props) {
   return (
     <li className="flex gap-4 items-start py-2">
-      {/* サムネイル */}
-      <Link href={`/videos/${video.videoDbId}`} className="shrink-0">
-        <Image
-          src={video.thumbnail.url}
-          alt={video.title}
-          width={160}
-          height={90}
-          className="rounded-md"
-        />
-      </Link>
+      {/* 左カラム：サムネイル + いいね */}
+      <div className="flex flex-col items-start gap-2 shrink-0">
+        <Link href={`/videos/${video.videoDbId}`}>
+          <Image
+            src={video.thumbnail.url}
+            alt={video.title}
+            width={160}
+            height={90}
+            className="rounded-md"
+          />
+        </Link>
 
-      {/* 動画情報 */}
+        {/* サムネ直下のいいね */}
+        <LikeButton videoId={video.videoDbId} initialLiked={video.isFavorite} />
+      </div>
+
+      {/* 右カラム：動画情報 */}
       <Link
         href={`/videos/${video.videoDbId}`}
         className="flex-1 min-w-0 space-y-1"
@@ -34,11 +39,6 @@ export default function FavoriteVideoItem({ video }: Props) {
           {formatRelativeDate(video.publishedAt)}
         </p>
       </Link>
-
-      {/* 右端: いいね */}
-      <div className="shrink-0 pt-1">
-        <LikeButton videoId={video.videoDbId} initialLiked={video.isFavorite} />
-      </div>
     </li>
   );
 }
