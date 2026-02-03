@@ -74,13 +74,18 @@ export default function RecommendationsView() {
 
           {/* タイトル */}
           <p className="text-xl font-semibold leading-snug mb-1">
-            {recommendation.title}
+            <Link href={`/videos/${recommendation.videoDbId}`}>
+              {recommendation.title}
+            </Link>
           </p>
 
           {/* 投稿者 + 視聴回数 + 投稿日 + いいねボタン */}
           <div className="flex items-center mt-2 flex-nowrap">
-            {/* 左側：チャンネル情報 */}
-            <div className="flex items-center gap-3 flex-1 min-w-0">
+            {/* 左側：動画情報（クリックで詳細へ） */}
+            <Link
+              href={`/videos/${recommendation.videoDbId}`}
+              className="flex items-center gap-3 flex-1 min-w-0 hover:bg-gray-50 rounded-md p-1 transition"
+            >
               {/* チャンネルサムネイル（擬似） */}
               <Image
                 src={recommendation.thumbnail.url}
@@ -101,7 +106,7 @@ export default function RecommendationsView() {
                   {formatRelativeDate(recommendation.publishedAt)}
                 </p>
               </div>
-            </div>
+            </Link>
 
             {/* 右側：いいねボタン(ログイン時のみ) */}
             {recommendation.canFavorite && (

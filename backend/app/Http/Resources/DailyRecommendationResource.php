@@ -18,7 +18,8 @@ class DailyRecommendationResource extends JsonResource
         return [
             'id'              => $this->id
                                 ?? $this->video->id ?? null,
-            'videoDbId'       => $this->video->id ?? null,
+            'videoDbId'       => $this->id
+                                ?? $this->video->id ?? null,
             'videoId'         => $this->youtube_id
                                 ?? $this->video->youtube_id ?? null,
             'title'           => $this->title
