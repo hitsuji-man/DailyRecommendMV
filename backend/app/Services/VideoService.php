@@ -54,6 +54,16 @@ class VideoService
      */
     private function storeUserHistory(int $userId, int $videoId): void
     {
+        // 冪等性:直近3秒以内に履歴があれば保存しない(3秒以内の二重保存を防止)
+        $exists = UserHistory::where('user_id', $userId)
+            ->where('video_id', $videoId)
+            ->where('viewed_at', '>=', now()->subSeconds(3))
+            ->exists();
+
+        if ($exists) {
+            return;
+        }
+
         UserHistory::create([
             'user_id'    => $userId,
             'video_id'   => $videoId,
