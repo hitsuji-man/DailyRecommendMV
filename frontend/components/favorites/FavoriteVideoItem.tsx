@@ -11,7 +11,7 @@ type Props = {
 
 export default function FavoriteVideoItem({ video, onUnfavorite }: Props) {
   return (
-    <li className="flex gap-4 items-start py-2">
+    <li className="flex gap-4 items-start py-1">
       {/* 左カラム：サムネイル + いいね */}
       <div className="flex flex-col items-start gap-2 shrink-0">
         <Link href={`/videos/${video.videoDbId}`}>

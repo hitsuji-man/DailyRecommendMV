@@ -11,7 +11,7 @@ type Props = {
 
 export default function RecommendationCard({ recommendation }: Props) {
   return (
-    <div className="flex items-start gap-4 p-2">
+    <div className="flex items-start gap-4 p-1">
       <Link href={`/videos/${recommendation.videoDbId}`}>
         <li key={recommendation.id} className="flex gap-3 items-start">
           {/* サムネイル */}

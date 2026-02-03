@@ -10,7 +10,7 @@ type Props = {
 
 export default function HistoryItem({ history, onDelete }: Props) {
   return (
-    <div className="relative flex items-start gap-4 p-2">
+    <div className="relative flex items-start gap-4 p-1">
       {/* 左側：クリック可能領域 */}
       <Link
         href={`/videos/${history.videoDbId}`}
