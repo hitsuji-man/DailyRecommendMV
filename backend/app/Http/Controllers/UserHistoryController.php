@@ -25,9 +25,10 @@ class UserHistoryController extends Controller
      * 視聴履歴一覧を取得
      * @return AnonymousResourceCollection
      */
-    public function getUserHistories(): AnonymousResourceCollection
+    public function getUserHistories(Request $request): AnonymousResourceCollection
     {
-        $userHistories = $this->userHistoryService->getUserHistories();
+        $user = $request->user();
+        $userHistories = $this->userHistoryService->getUserHistories($user);
         return UserHistoryResource::collection($userHistories);
     }
 

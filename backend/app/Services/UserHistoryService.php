@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\UserHistory;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,9 +16,11 @@ class UserHistoryService
      * 視聴履歴を全件取得する
      * @return Collection
      */
-    public function getUserHistories(): Collection
+    public function getUserHistories(User $user): Collection
     {
-        return UserHistory::orderBy('viewed_at', 'desc')->get();
+        return UserHistory::orderBy('viewed_at', 'desc')
+            ->where('user_id', $user->id)
+            ->get();
     }
 
     /**

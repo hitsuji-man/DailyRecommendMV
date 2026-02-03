@@ -41,7 +41,7 @@ export default function HistoryItem({ history, onDelete }: Props) {
       {/* 右上：削除ボタン（クリック領域外） */}
       <button
         onClick={() => onDelete(history.id)}
-        className="absolute top-2 right-2 text-2xl text-gray-400 hover:text-gray-700"
+        className="absolute top-2 right-2 text-3xl text-gray-400 hover:text-gray-700"
         aria-label="視聴履歴を削除"
       >
         ×
