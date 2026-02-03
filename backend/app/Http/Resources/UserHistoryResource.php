@@ -17,6 +17,7 @@ class UserHistoryResource extends JsonResource
         return [
             'userId'       => $this->user_id ?? null,
             'viewedAt'     => $this->viewed_at ?? null,
+            'videoDbId'    => $this->video->id ?? null,
             'videoId'      => $this->video->youtube_id ?? null,
             'title'        => $this->video->title ?? null,
             'description'  => $this->video->description ?? null,
