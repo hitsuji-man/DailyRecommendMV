@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DailyRecommendationResource;
+use App\Http\Resources\TodayRecommendVideoResource;
 use App\Services\DailyRecommendationService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,16 +23,16 @@ class DailyRecommendationController extends Controller
     public function getDailyRecommendVideoHistories(): AnonymousResourceCollection
     {
         $dailyRecommendationHistories = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
-        return DailyRecommendationResource::collection($dailyRecommendationHistories);
+        return TodayRecommendVideoResource::collection($dailyRecommendationHistories);
     }
 
     /**
      * 今日のおすすめMVを取得(なければ保存)
-     * @return DailyRecommendationResource
+     * @return TodayRecommendVideoResource
      */
-    public function getDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): DailyRecommendationResource
+    public function getDailyRecommendVideo(DailyRecommendationService $dailyRecommendationService): TodayRecommendVideoResource
     {
-        return new DailyRecommendationResource($dailyRecommendationService->pickDailyRecommendVideo(Auth::user()));
+        return new TodayRecommendVideoResource($dailyRecommendationService->pickDailyRecommendVideo(Auth::user()));
     }
 
     /**
