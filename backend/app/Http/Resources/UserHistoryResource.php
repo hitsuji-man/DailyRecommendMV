@@ -15,6 +15,7 @@ class UserHistoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'           => $this->id ?? null,
             'userId'       => $this->user_id ?? null,
             'viewedAt'     => $this->viewed_at ?? null,
             'videoDbId'    => $this->video->id ?? null,

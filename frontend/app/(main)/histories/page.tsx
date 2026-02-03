@@ -25,10 +25,10 @@ export default function HistoriesPage() {
   }, []);
 
   /** videoDbId で削除 */
-  const handleDelete = async (videoDbId: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      await api.delete(`/histories/${videoDbId}`);
-      setHistories((prev) => prev.filter((h) => h.videoDbId !== videoDbId));
+      await api.delete(`/histories/${id}`);
+      setHistories((prev) => prev.filter((h) => h.id !== id));
     } catch {
       alert("視聴履歴の削除に失敗しました");
     }
@@ -37,7 +37,9 @@ export default function HistoriesPage() {
   if (loading) return <p className="p-6 text-center">読み込み中...</p>;
 
   if (histories.length === 0) {
-    return <p className="text-gray-500">視聴履歴はありません</p>;
+    return (
+      <p className="text-gray-500 p-6 text-center">視聴履歴はありません</p>
+    );
   }
 
   return (

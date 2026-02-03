@@ -1,4 +1,5 @@
 export type History = {
+  id: number;
   userId: number;
   viewedAt: string;
   videoDbId: number;
