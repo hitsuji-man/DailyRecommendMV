@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { History } from "@/types/History";
 import HistoryItem from "@/components/HistoryItem";
 
 export default function HistoriesPage() {
   const [histories, setHistories] = useState<History[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchHistories = async () => {
@@ -15,6 +18,10 @@ export default function HistoriesPage() {
         const res = await api.get("/histories");
         setHistories(res.data.data);
       } catch (e) {
+        if (axios.isAxiosError(e) && e.response?.status === 401) {
+          router.push("/login");
+          return; // ここで処理終了
+        }
         console.error("Failed to fetch histories", e);
       } finally {
         setLoading(false);
@@ -22,7 +29,7 @@ export default function HistoriesPage() {
     };
 
     fetchHistories();
-  }, []);
+  }, [router]);
 
   /** videoDbId で削除 */
   const handleDelete = async (id: number) => {
