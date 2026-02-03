@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\UserHistory;
+use DomainException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use RuntimeException;
 
 class UserHistoryService
@@ -24,9 +26,18 @@ class UserHistoryService
      */
     public function deleteUserHistory(int $id): void
     {
-        $history = UserHistory::find($id);
+        $userId = Auth::id();
+
+        if (!$userId) {
+            throw new DomainException('Unauthenticated');
+        }
+
+        $history = UserHistory::where('id', $id)
+            ->where('user_id', $userId)
+            ->first();
+
         if (!$history) {
-            throw new \DomainException('user history not found');
+            throw new DomainException('user history not found');
         }
         $history->delete();
     }
