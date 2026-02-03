@@ -74,7 +74,10 @@ export default function RecommendationsView() {
 
           {/* タイトル */}
           <p className="text-xl font-semibold leading-snug mb-1">
-            <Link href={`/videos/${recommendation.videoDbId}`}>
+            <Link
+              href={`/videos/${recommendation.videoDbId}`}
+              className="rounded-md active:bg-gray-100"
+            >
               {recommendation.title}
             </Link>
           </p>
@@ -84,7 +87,7 @@ export default function RecommendationsView() {
             {/* 左側：動画情報（クリックで詳細へ） */}
             <Link
               href={`/videos/${recommendation.videoDbId}`}
-              className="flex items-center gap-3 flex-1 min-w-0 hover:bg-gray-50 rounded-md p-1 transition"
+              className="flex items-center gap-3 flex-1 min-w-0 hover:bg-gray-50 rounded-md p-1 active:bg-gray-100 transition-colors duration-150"
             >
               {/* チャンネルサムネイル（擬似） */}
               <Image
