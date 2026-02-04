@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DailyRecommendationResource;
 use App\Http\Resources\TodayRecommendVideoResource;
 use App\Services\DailyRecommendationService;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ class DailyRecommendationController extends Controller
     public function getDailyRecommendVideoHistories(): AnonymousResourceCollection
     {
         $dailyRecommendationHistories = $this->dailyRecommendationService->getDailyRecommendVideoHistory();
-        return TodayRecommendVideoResource::collection($dailyRecommendationHistories);
+        return DailyRecommendationResource::collection($dailyRecommendationHistories);
     }
 
     /**
