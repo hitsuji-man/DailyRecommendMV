@@ -55,7 +55,7 @@ export default function VideoDetailView({ videoId }: { videoId: string }) {
   }, [videoId, authVersion, authLoading]);
 
   if (loading || !video) {
-    return <div className="p-6 text-center">読み込み中...</div>;
+    return <p className="p-6 text-center">読み込み中...</p>;
   }
 
   return (

@@ -23,7 +23,7 @@ export default function FavoritesList() {
     );
   };
 
-  if (loading) return <div className="p-6 text-center">読み込み中...</div>;
+  if (loading) return <p className="p-6 text-center">読み込み中...</p>;
 
   // お気に入りが空(0件)の時の表示
   if (videos.length === 0) {
