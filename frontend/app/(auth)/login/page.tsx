@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuthContext } from "@/context/AuthContext";
@@ -10,16 +10,27 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { login } = useAuthContext();
+  const { user, loading: authLoading, login } = useAuthContext();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/");
+    }
+  }, [user, authLoading, router]);
+
+  // 描画ガード
+  if (authLoading || user) {
+    return null; // 何も描画しない
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (submitting) return;
 
-    setLoading(true);
+    setSubmitting(true);
     setError(null);
 
     try {
@@ -36,7 +47,7 @@ export default function LoginPage() {
         setError("予期しないエラーが発生しました");
       }
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -71,10 +82,10 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={submitting}
           className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 disabled:opacity-50"
         >
-          {loading ? "ログイン中…" : "ログイン"}
+          {submitting ? "ログイン中…" : "ログイン"}
         </button>
       </form>
     </div>

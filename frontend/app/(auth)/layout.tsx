@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 
-export default function MainLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
