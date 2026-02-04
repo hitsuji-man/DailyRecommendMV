@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
-import { getDeviceId } from "@/lib/device";
 import axios from "axios";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +13,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { login } = useAuthContext();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
@@ -22,18 +23,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const res = await api.post("/login", {
-        email,
-        password,
-        device_id: getDeviceId(),
-      });
-
-      // token 保存
-      localStorage.setItem("access_token", res.data.token);
-
-      // 必要なら user も保存
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-
+      await login(email, password);
       router.push("/");
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {

@@ -54,6 +54,31 @@ export function useAuth() {
       // token を保存
       localStorage.setItem("access_token", res.data.token);
 
+      // トークンが変わったら authVersion を+1する
+      setAuthVersion((v) => v + 1);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response?.data);
+      }
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    const deviceId = getDeviceId();
+
+    try {
+      const res = await api.post("/login", {
+        email,
+        password,
+        device_id: deviceId,
+      });
+
+      // token 保存
+      localStorage.setItem("access_token", res.data.token);
+      // 必要なら user も保存
+      // localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // トークンが変わったら authVersion を+1する
       setAuthVersion((v) => v + 1);
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -76,6 +101,7 @@ export function useAuth() {
     user,
     loading,
     authVersion,
+    login,
     logout,
     anonymousLogin,
     refetchUser,
