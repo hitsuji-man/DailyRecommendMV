@@ -17,7 +17,7 @@ export function useAuth() {
   const refetchUser = useCallback(async () => {
     try {
       const res = await api.get("/user");
-      setUser(res.data);
+      setUser(res.data.data);
     } catch {
       setUser(null);
       localStorage.removeItem("access_token");
