@@ -10,8 +10,6 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authVersion, setAuthVersion] = useState(0);
-  // isLoggingOutは未使用
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const refetchUser = useCallback(async () => {
@@ -27,9 +25,16 @@ export function useAuth() {
   }, []);
 
   const logout = async () => {
+    if (isLoggingOut) return; // 二重防止
+
     setIsLoggingOut(true);
     try {
       await api.post("/logout");
+    } catch (e) {
+      // 401 は「すでにログアウト済み」なので正常系
+      if (!(axios.isAxiosError(e) && e.response?.status === 401)) {
+        throw e;
+      }
     } finally {
       localStorage.removeItem("access_token");
       setUser(null);
@@ -99,6 +104,7 @@ export function useAuth() {
     authVersion,
     login,
     logout,
+    isLoggingOut,
     anonymousLogin,
     refetchUser,
   };

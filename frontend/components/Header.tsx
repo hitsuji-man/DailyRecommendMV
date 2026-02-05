@@ -6,7 +6,7 @@ import { useAuthContext } from "@/context/AuthContext";
 export default function Header() {
   // authVersionは未使用。購読のみ
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user, authVersion, loading, logout, anonymousLogin } =
+  const { user, authVersion, loading, logout, isLoggingOut, anonymousLogin } =
     useAuthContext();
 
   if (loading) return null; // or skeleton
@@ -37,7 +37,11 @@ export default function Header() {
             <Link href="/user" className="text-gray-100">
               ユーザー情報
             </Link>
-            <button onClick={logout} className="text-gray-100 cursor-pointer">
+            <button
+              onClick={logout}
+              disabled={isLoggingOut}
+              className="text-gray-100 cursor-pointer"
+            >
               ログアウト
             </button>
           </>
