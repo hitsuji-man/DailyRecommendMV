@@ -4,11 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import axios from "axios";
 import { getDeviceId } from "@/lib/device";
-
-export type User = {
-  id: number;
-  name: string;
-};
+import { User } from "@/types/User";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
