@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { api } from "@/lib/api";
@@ -155,6 +155,7 @@ function PasswordForm() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
+  const currentRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -175,6 +176,8 @@ function PasswordForm() {
       setCurrent("");
       setPassword("");
       setConfirm("");
+      // フォーカスを外す
+      currentRef.current?.blur();
     } catch {
       alert("変更に失敗しました");
     } finally {
