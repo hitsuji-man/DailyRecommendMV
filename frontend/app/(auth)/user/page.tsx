@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { api } from "@/lib/api";
 import { User } from "@/types/User";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 export default function UserPage() {
   const router = useRouter();
@@ -156,6 +158,9 @@ function PasswordForm() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const currentRef = useRef<HTMLInputElement>(null);
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -189,29 +194,62 @@ function PasswordForm() {
     <div className="border rounded-md p-4 space-y-3">
       <h2 className="font-semibold">パスワード変更</h2>
 
-      <input
-        type="password"
-        className="w-full border rounded px-3 py-2"
-        placeholder="現在のパスワード"
-        value={current}
-        onChange={(e) => setCurrent(e.target.value)}
-      />
+      <div className="relative">
+        <input
+          type={showCurrent ? "text" : "password"}
+          className="w-full border rounded px-3 py-2 pr-10"
+          placeholder="現在のパスワード"
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+        />
 
-      <input
-        type="password"
-        className="w-full border rounded px-3 py-2"
-        placeholder="新しいパスワード"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <button
+          type="button"
+          onClick={() => setShowCurrent((v) => !v)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+          aria-label={showCurrent ? "パスワードを隠す" : "パスワードを表示"}
+        >
+          <FontAwesomeIcon icon={showCurrent ? faEyeSlash : faEye} />
+        </button>
+      </div>
 
-      <input
-        type="password"
-        className="w-full border rounded px-3 py-2"
-        placeholder="新しいパスワード（確認）"
-        value={confirm}
-        onChange={(e) => setConfirm(e.target.value)}
-      />
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          className="w-full border rounded px-3 py-2 pr-10"
+          placeholder="新しいパスワード"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          type="button"
+          onClick={() => setShowPassword((v) => !v)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+          aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+        >
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+        </button>
+      </div>
+
+      <div className="relative">
+        <input
+          type={showConfirm ? "text" : "password"}
+          className="w-full border rounded px-3 py-2"
+          placeholder="新しいパスワード（確認）"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
+
+        <button
+          type="button"
+          onClick={() => setShowConfirm((v) => !v)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+          aria-label={showConfirm ? "パスワードを隠す" : "パスワードを表示"}
+        >
+          <FontAwesomeIcon icon={showConfirm ? faEyeSlash : faEye} />
+        </button>
+      </div>
 
       <button
         onClick={handleSubmit}
