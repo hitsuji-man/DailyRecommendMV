@@ -33,7 +33,7 @@ export default function HistoryItem({ history, onDelete }: Props) {
             {history.viewCount.toLocaleString()} 回視聴
           </p>
           <p className="text-xs text-gray-400">
-            視聴日：{formatRelativeDate(history.viewedAt)}
+            視聴日時：{formatRelativeDate(history.viewedAt)}
           </p>
         </div>
       </Link>
