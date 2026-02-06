@@ -84,7 +84,7 @@ function GuestNotice() {
       <p className="text-sm text-gray-700">
         現在はゲストユーザーです。
         <br />
-        会員登録すると、履歴の引き継ぎや他端末ログインが可能になります。
+        会員登録すると、お気に入りと視聴履歴の引き継ぎや他端末ログインが可能になります。
       </p>
       <button
         onClick={() => router.push("/register")}
