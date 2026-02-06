@@ -58,9 +58,7 @@ export function useAuth() {
       // トークンが変わったら authVersion を+1する
       setAuthVersion((v) => v + 1);
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        console.log(e.response?.data);
-      }
+      throw e;
     }
   };
 
