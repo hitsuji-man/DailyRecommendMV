@@ -50,7 +50,7 @@ api.interceptors.response.use(
 
     const hasToken = !!localStorage.getItem("access_token");
 
-    // ★ トークンが無い状態の 401 は「正常」
+    // トークンが無い状態の 401 は「正常」
     if (status === 401 && hasToken) {
       // トークンの破棄
       localStorage.removeItem("access_token");
