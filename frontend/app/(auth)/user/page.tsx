@@ -194,6 +194,7 @@ function PasswordForm() {
     <div className="border rounded-md p-4 space-y-3">
       <h2 className="font-semibold">パスワード変更</h2>
 
+      {/* 現在のパスワード */}
       <div className="relative">
         <input
           type={showCurrent ? "text" : "password"}
@@ -213,6 +214,7 @@ function PasswordForm() {
         </button>
       </div>
 
+      {/* 新しいパスワード */}
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
@@ -232,6 +234,7 @@ function PasswordForm() {
         </button>
       </div>
 
+      {/* 新しいパスワード(確認) */}
       <div className="relative">
         <input
           type={showConfirm ? "text" : "password"}
