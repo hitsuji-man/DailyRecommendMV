@@ -62,9 +62,10 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['認証に失敗しました'],
-            ]);
+            return response()->json(
+            ['message' => '認証に失敗しました'],
+            401
+            );
         }
 
         /**

@@ -41,11 +41,15 @@ export default function LoginPage() {
       router.push("/");
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
-        setError(
-          e.response?.data?.message ??
-            e.response?.data?.errors?.email?.[0] ??
-            "ログインに失敗しました",
-        );
+        const status = e.response?.status;
+
+        if (status === 401) {
+          setError("メールアドレスまたはパスワードが違います");
+        } else if (status === 422) {
+          setError("入力内容に誤りがあります");
+        } else {
+          setError("ログインに失敗しました");
+        }
       } else {
         setError("予期しないエラーが発生しました");
       }
