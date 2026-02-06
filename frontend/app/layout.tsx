@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+// Font Awesome の CSS 自動挿入を無効化（CSSの上書きをしないために重要）
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+
+config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "日替わりおすすめMV再生アプリ",
