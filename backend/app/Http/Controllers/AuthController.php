@@ -63,8 +63,8 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(
-            ['message' => '認証に失敗しました'],
-            401
+                ['message' => '認証に失敗しました'],
+                401
             );
         }
 
