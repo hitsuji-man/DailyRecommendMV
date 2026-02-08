@@ -12,6 +12,9 @@ export function useAuth() {
   const [authVersion, setAuthVersion] = useState(0);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  /**
+   * ユーザー情報取得
+   */
   const refetchUser = useCallback(async () => {
     try {
       const res = await api.get("/user");
@@ -24,6 +27,9 @@ export function useAuth() {
     }
   }, []);
 
+  /**
+   * ログアウト
+   */
   const logout = async () => {
     if (isLoggingOut) return; // 二重防止
 
@@ -43,6 +49,9 @@ export function useAuth() {
     }
   };
 
+  /**
+   * 匿名ログイン(ゲストでログイン)
+   */
   const anonymousLogin = async () => {
     const deviceId = getDeviceId();
 
@@ -62,6 +71,9 @@ export function useAuth() {
     }
   };
 
+  /**
+   * ログイン
+   */
   const login = async (email: string, password: string) => {
     const deviceId = getDeviceId();
 
@@ -84,6 +96,30 @@ export function useAuth() {
     }
   };
 
+  /**
+   * ユーザー登録
+   */
+  const register = async (name: string, email: string, password: string) => {
+    const deviceId = getDeviceId();
+
+    try {
+      const res = await api.post("/register", {
+        name,
+        email,
+        password,
+        device_id: deviceId,
+      });
+
+      // token 保存
+      localStorage.setItem("access_token", res.data.token);
+
+      // 認証状態更新トリガ
+      setAuthVersion((v) => v + 1);
+    } catch (e) {
+      throw e;
+    }
+  };
+
   // ログイン状態確認はtokenがある時だけ
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -98,10 +134,11 @@ export function useAuth() {
     user,
     loading,
     authVersion,
-    login,
     logout,
     isLoggingOut,
     anonymousLogin,
+    login,
+    register,
     refetchUser,
   };
 }
