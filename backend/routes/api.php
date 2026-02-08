@@ -46,5 +46,7 @@ Route::prefix('v1')->group(function() {
 
     Route::post('/anonymous-login', [AuthController::class, 'anonymousLogin']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
+    // 任意認証(未ログインユーザー + ゲストユーザー)
+    Route::middleware('optional.auth')
+        ->post('/register', [AuthController::class, 'register']);
 });
