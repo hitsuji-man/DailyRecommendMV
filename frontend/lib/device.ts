@@ -11,3 +11,13 @@ export function getDeviceId(): string {
   }
   return id;
 }
+
+/**
+ * 新しいゲストとして開始するための device_id 再生成
+ * 「ゲストユーザー」→ 「登録ユーザーに昇格」→ 「ログアウトしてゲストでログイン」する際にdevice_id再生成
+ */
+export function resetDeviceId(): string {
+  const id = uuidv4();
+  localStorage.setItem(KEY, id);
+  return id;
+}
