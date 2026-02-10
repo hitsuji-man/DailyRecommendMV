@@ -53,51 +53,9 @@ class VideoController extends Controller
      * ミックス動画リストを重複防止で保存する
      * @return JsonResponse
      */
-    public function saveMixedDailyList(Request $request): JsonResponse
+    public function saveMixedDailyList(): JsonResponse
     {
-        $rawVideos = $this->youtube->buildMixedDailyList();
-
-        $saveData = SaveVideoResource::collection($rawVideos)->toArray(request());
-
-        $upsertData = [];
-
-        foreach ($saveData as $v) {
-            // Artist 作成 or 取得
-            $artist = Artist::firstOrCreate(
-    ['channel_id' => $v['channel_id']],
-        ['channel_title' => $v['channel_title']],
-            );
-
-            $upsertData[] = [
-                ...$v,
-                'artist_id'     => $artist->id,
-                'thumbnail'     => (isset($v['thumbnail'])
-                                ? json_encode($v['thumbnail']) : null),
-                'published_at'  => (isset($v['published_at'])
-                                ? Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s') : null),
-                'created_at'    => now()->format('Y-m-d H:i:s'),
-                'updated_at'    => now()->format('Y-m-d H:i:s'),
-            ];
-        }
-
-        // upsert 実行
-        Video::upsert(
-            $upsertData,
-            ['youtube_id'], // unique key
-            [
-                'artist_id',
-                'title',
-                'description',
-                'channel_id',
-                'channel_title',
-                'thumbnail',
-                'published_at',
-                'view_count',
-                'like_count',
-                'source_type',
-                'updated_at',
-            ]
-        );
+        $this->videoService->saveMixedDailyList();
 
         return response()->json([
             'status'  => 'success',
