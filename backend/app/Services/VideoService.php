@@ -54,8 +54,8 @@ class VideoService
         foreach ($saveData as $v) {
             // Artist 作成 or 取得
             $artist = Artist::firstOrCreate(
-    ['channel_id' => $v['channel_id']],
-        ['channel_title' => $v['channel_title']],
+                ['channel_id' => $v['channel_id']],
+                ['channel_title' => $v['channel_title']],
             );
 
             $upsertData[] = [
