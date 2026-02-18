@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useAuthContext } from "@/context/AuthContext";
 import { api } from "@/lib/api";
 import { User } from "@/types/User";
@@ -9,15 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 export default function UserPage() {
-  const router = useRouter();
-  const { user, loading: authLoading, refetchUser } = useAuthContext();
-
-  // 認証ガード（副作用だけを書く）
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace("/login");
-    }
-  }, [authLoading, user, router]);
+  const { user, loading: authLoading } = useRequireAuth();
+  const { refetchUser } = useAuthContext();
 
   // TODO:表示ローディング（派生状態）
   if (authLoading) {

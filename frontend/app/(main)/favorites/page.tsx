@@ -1,21 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthContext } from "@/context/AuthContext";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import FavoritesList from "@/components/favorites/FavoritesList";
 
 export default function FavoritesPage() {
-  const { user, loading } = useAuthContext();
-  const router = useRouter();
+  const { loading, isAuthenticated } = useRequireAuth();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/login");
-    }
-  }, [loading, user, router]);
+  if (loading || !isAuthenticated) return null;
 
-  if (loading || !user) return null;
+  if (loading || !isAuthenticated) {
+    return <p className="p-6 text-center">読み込み中...</p>;
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">

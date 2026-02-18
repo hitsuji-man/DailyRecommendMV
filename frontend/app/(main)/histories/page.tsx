@@ -6,25 +6,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { History } from "@/types/History";
 import HistoryItem from "@/components/HistoryItem";
-import { useAuthContext } from "@/context/AuthContext";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export default function HistoriesPage() {
   const [histories, setHistories] = useState<History[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const { user, loading: authLoading } = useAuthContext();
-
-  // ログアウト即検知 -> 即リダイレクト
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
-      router.replace("/login");
-    }
-  }, [user, authLoading, router]);
+  const { user, loading: authLoading } = useRequireAuth();
 
   // 認証済みの時だけ fetch
   useEffect(() => {
+    // 認証確定前ならリダイレクト or 未ログインなら useRequireAuth がリダイレクト済み
     if (authLoading || !user) return;
 
     const fetchHistories = async () => {
