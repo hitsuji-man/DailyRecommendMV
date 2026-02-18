@@ -38,7 +38,6 @@ export default function HistoriesPage() {
     fetchHistories();
   }, [user, authLoading, router]);
 
-  /** videoDbId で削除 */
   const handleDelete = async (id: number) => {
     try {
       await api.delete(`/histories/${id}`);
