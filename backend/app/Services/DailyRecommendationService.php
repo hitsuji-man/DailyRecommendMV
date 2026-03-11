@@ -50,6 +50,10 @@ class DailyRecommendationService
             ->withIsFavorite($user)
             ->first();
 
+        if (!$recommendVideo) {
+            throw new \RuntimeException('videos table is empty');
+        }
+
         // 直近1週間に同じMVを取得していた場合、それを除いて再度ランダム抽選
         if ($this->checkAlreadySavedVideoFor1Week($recommendVideo)) {
             // 直近1週間で保存したMVのvideo_idリストを取得
