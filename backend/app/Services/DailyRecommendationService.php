@@ -66,6 +66,12 @@ class DailyRecommendationService
                 ->inRandomOrder()
                 ->withIsFavorite($user)
                 ->first();
+
+            if (!$recommendVideo) {
+                $recommendVideo = Video::inRandomOrder()
+                    ->withIsFavorite($user)
+                    ->first();
+            }
         }
 
         $recommendVideo->recommend_date = $today;
