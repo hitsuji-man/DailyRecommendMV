@@ -18,10 +18,10 @@ return new class extends Migration
             // 複合UNIQUE制約(同じアーティストの同じ動画が重複登録されない)
             $table->unique(['youtube_id', 'artist_id']);
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('channel_id', 50);
             $table->string('channel_title');
-            $table->string('thumbnail');
+            $table->json('thumbnail')->nullable();
             $table->dateTime('published_at')->nullable();
             $table->bigInteger('view_count')->nullable();
             $table->bigInteger('like_count')->nullable();
