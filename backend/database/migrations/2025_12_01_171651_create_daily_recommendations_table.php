@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('daily_recommendations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('video_id')->constrained('videos')->cascadeOnDelete();
+            $table->foreignId('video_id')->index()->constrained('videos')->cascadeOnDelete();
             $table->date('recommend_date')->unique();
             $table->timestamp('created_at')->useCurrent();
         });

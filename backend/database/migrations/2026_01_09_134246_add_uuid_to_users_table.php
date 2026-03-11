@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->char('uuid', 36)
-                ->after('id')
                 ->unique()
                 ->comment('内部識別用UUID');
         });

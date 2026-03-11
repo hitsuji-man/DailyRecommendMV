@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('video_id')->constrained('videos')->cascadeOnDelete();
+            $table->foreignId('user_id')->index()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('video_id')->index()->constrained('videos')->cascadeOnDelete();
             $table->dateTime('viewed_at');
             $table->integer('watched_seconds')->nullable();
             $table->timestamp('created_at')->useCurrent();

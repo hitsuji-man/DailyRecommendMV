@@ -15,7 +15,6 @@ return new class extends Migration
             $table->char('device_id', 36)
                 ->nullable()
                 ->unique()
-                ->after('uuid')
                 ->comment('匿名即時ユーザー用 端末識別UUID');
         });
     }
