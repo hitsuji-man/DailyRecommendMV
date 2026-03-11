@@ -50,6 +50,7 @@ class VideoService
         $saveData = SaveVideoResource::collection($rawVideos)->toArray(request());
 
         $upsertData = [];
+        $map = [];
 
         foreach ($saveData as $v) {
             // Artist 作成 or 取得
@@ -58,17 +59,29 @@ class VideoService
                 ['channel_title' => $v['channel_title']],
             );
 
-            $upsertData[] = [
-                ...$v,
-                'artist_id'     => $artist->id,
-                'thumbnail'     => (isset($v['thumbnail'])
-                                ? json_encode($v['thumbnail']) : null),
-                'published_at'  => (isset($v['published_at'])
-                                ? Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s') : null),
+            // trendとplaylist両方から同じ動画が来る場合を想定して、youtube_idで連想配列にする
+            $map[$v['youtube_id']] = [
+                'youtube_id' => $v['youtube_id'],
+                'artist_id' => $artist->id,
+                'title' => $v['title'],
+                'description' => $v['description'] ?? null,
+                'channel_id' => $v['channel_id'],
+                'channel_title' => $v['channel_title'],
+                'thumbnail' => isset($v['thumbnail'])
+                    ? json_encode($v['thumbnail'])
+                    : null,
+                'published_at' => isset($v['published_at'])
+                    ? Carbon::parse($v['published_at'])->timezone('Asia/Tokyo')->format('Y-m-d H:i:s')
+                    : null,
+                'view_count' => isset($v['view_count']) ? (int)$v['view_count'] : null,
+                'like_count' => isset($v['like_count']) ? (int)$v['like_count'] : null,
+                'source_type' => $v['source_type'],
                 'created_at'    => now()->format('Y-m-d H:i:s'),
                 'updated_at'    => now()->format('Y-m-d H:i:s'),
             ];
         }
+
+        $upsertData = array_values($map);
 
         // upsert 実行
         Video::upsert(
