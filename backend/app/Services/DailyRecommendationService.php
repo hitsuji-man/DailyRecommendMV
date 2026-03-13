@@ -77,11 +77,32 @@ class DailyRecommendationService
         $recommendVideo->recommend_date = $today;
 
         // ランダム取得したMVを固定化させるためにここで保存
-        DailyRecommendation::create([
-            'video_id'       => $recommendVideo->id,
-            'recommend_date' => $today,
-            'created_at'     => now(),
-        ]);
+        // Race Condition対応:create→失敗したら再取得
+        try {
+            DailyRecommendation::create([
+                'video_id' => $recommendVideo->id,
+                'recommend_date' => $today,
+                'created_at' => now(),
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            // 他リクエストが先にINSERTした場合
+            $existing = DailyRecommendation::where('recommend_date', $today)
+                ->with([
+                    'video' => fn ($q) => $q->withIsFavorite($user)
+                ])
+                ->first();
+
+            if ($existing) {
+                $video = $existing->video;
+                $video->recommend_date = $existing->recommend_date;
+                $video->is_favorite ??= 0;
+
+                return $video;
+            }
+
+            throw $e;
+        }
 
         return $recommendVideo;
     }
