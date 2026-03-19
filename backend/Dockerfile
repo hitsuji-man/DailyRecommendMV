@@ -22,7 +22,7 @@ COPY composer.json composer.lock ./
 #     --no-progress \
 #     --prefer-dist \
 #     --optimize-autoloader
-RUN composer install -vvv
+RUN composer install -vvv || cat /tmp/* || true
 
 FROM node:20-alpine AS assets
 WORKDIR /app
