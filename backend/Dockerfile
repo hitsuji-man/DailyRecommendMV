@@ -3,6 +3,18 @@
 FROM composer:2 AS vendor
 WORKDIR /app
 
+ENV COMPOSER_MEMORY_LIMIT=-1
+
+RUN apk add --no-cache \
+    postgresql-dev \
+    oniguruma-dev \
+    libzip-dev \
+ && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    mbstring \
+    zip
+
 COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
