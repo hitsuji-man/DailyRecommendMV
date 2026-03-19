@@ -128,122 +128,121 @@ class AuthController extends Controller
         ]);
 
         try {
-            // トランザクション開始
-            $result = DB::transaction(function () use ($request) {
-                // 現在のユーザー(匿名 or null)
-                $user = $request->user();
+            // 現在のユーザー(匿名 or null)
+            $user = $request->user();
 
-                Log::info('register: transaction start', [
-                    'has_user' => (bool) $user,
-                    'user_id' => $user?->id,
-                    'user_email' => $user?->email,
+            Log::info('register: transaction start', [
+                'has_user' => (bool) $user,
+                'user_id' => $user?->id,
+                'user_email' => $user?->email,
+            ]);
+
+            if ($user) {
+                // 匿名ユーザー → 正規ユーザーに昇格
+                Log::info('register: upgrade anonymous user start', [
+                    'user_id' => $user->id,
+                    'before_email' => $user->email,
                 ]);
 
-                if ($user) {
-                    // 匿名ユーザー → 正規ユーザーに昇格
-                    Log::info('register: upgrade anonymous user start', [
-                        'user_id' => $user->id,
-                        'before_email' => $user->email,
-                    ]);
-
-                    if ($user->email !== null) {
-                        Log::warning('register: already registered user tried register', [
-                            'user_id' => $user->id,
-                            'email' => $user->email,
-                        ]);
-
-                        throw ValidationException::withMessages([
-                            'user'  => ['既に登録済みです'],
-                        ]);
-                    }
-
-                    Log::info('register: before user update', [
-                        'user_id' => $user->id,
-                        'new_email' => $request->email,
-                    ]);
-
-                    $user->update([
-                        'name'     => $request->name,
-                        'email'    => $request->email,
-                        'password' => $request->password,
-                    ]);
-
-                    Log::info('register: user update done', [
-                        'user_id' => $user->id,
-                    ]);
-
-                    Log::info('register: before token delete by device_id', [
-                        'user_id' => $user->id,
-                        'device_id' => $request->device_id,
-                    ]);
-                    // 匿名トークンは全削除
-                    $user->tokens()->delete();
-
-                    Log::info('register: all tokens delete', [
-                        'user_id' => $user->id,
-                        'device_id' => $request->device_id,
-                    ]);
-                } else {
-                    Log::info('register: create new user start', [
-                        'email' => $request->email,
-                    ]);
-
-                    // 完全新規ユーザー作成
-                    $user = User::create([
-                        'uuid'     => (string) Str::uuid(),
-                        'name'     => $request->name,
-                        'email'    => $request->email,
-                        'password' => $request->password,
-                    ]);
-
-                    Log::info('register: new user created', [
+                if ($user->email !== null) {
+                    Log::warning('register: already registered user tried register', [
                         'user_id' => $user->id,
                         'email' => $user->email,
                     ]);
+
+                    throw ValidationException::withMessages([
+                        'user'  => ['既に登録済みです'],
+                    ]);
                 }
 
-                Log::info('register: before token delete by device_id for new user', [
+                Log::info('register: before user update', [
+                    'user_id' => $user->id,
+                    'new_email' => $request->email,
+                ]);
+
+                $user->update([
+                    'name'     => $request->name,
+                    'email'    => $request->email,
+                    'password' => $request->password,
+                ]);
+
+                Log::info('register: user update done', [
+                    'user_id' => $user->id,
+                ]);
+
+                Log::info('register: before token delete by device_id', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
+                // 匿名トークンは全削除
+                $user->tokens()->delete();
 
-                // 同一 device_id の token を上書き
-                $user->tokens()
-                    ->where('name', $request->device_id)
-                    ->delete();
-
-                Log::info('register: before createToken', [
+                Log::info('register: all tokens delete', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
-
-                // 正規ユーザー用 token 発行
-                $token = $user->createToken(
-                    $request->device_id,
-                    ['user']
-                )->plainTextToken;
-
-                Log::info('register: createToken done', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
+            } else {
+                Log::info('register: create new user start', [
+                    'email' => $request->email,
                 ]);
 
-                // レスポンス用データを返す
-                return [
-                    'user'  => $user,
-                    'token' => $token,
-                ];
-            });
+                // 完全新規ユーザー作成
+                $user = User::create([
+                    'uuid'     => (string) Str::uuid(),
+                    'name'     => $request->name,
+                    'email'    => $request->email,
+                    'password' => $request->password,
+                ]);
+
+                Log::info('register: new user created', [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                ]);
+            }
+
+            Log::info('register: before token delete by device_id for new user', [
+                'user_id' => $user->id,
+                'device_id' => $request->device_id,
+            ]);
+
+            // 同一 device_id の token を上書き
+            $user->tokens()
+                ->where('name', $request->device_id)
+                ->delete();
+
+            Log::info('register: before createToken', [
+                'user_id' => $user->id,
+                'device_id' => $request->device_id,
+            ]);
+
+            // 正規ユーザー用 token 発行
+            $token = $user->createToken(
+                $request->device_id,
+                ['user']
+            )->plainTextToken;
+
+            Log::info('register: createToken done', [
+                'user_id' => $user->id,
+                'device_id' => $request->device_id,
+            ]);
+
+            // TODO:トランザクション消した際ならば不要
+            // // レスポンス用データを返す
+            // return [
+            //     'user'  => $user,
+            //     'token' => $token,
+            // ];
+
 
             Log::info('register: success response', [
-                'user_id' => $result['user']->id,
-                'email' => $result['user']->email,
+                'user_id' => $user->id,
+                'email' => $user->email,
             ]);
 
             // commit後にレスポンス
             return response()->json([
-                'token'  => $result['token'],
-                'user'   => $result['user'],
+                'token'  => $token,
+                'user'   => $user,
             ], 201);
         } catch (\Throwable $e) {
             Log::error('register: failed', [
