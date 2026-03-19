@@ -165,7 +165,7 @@ class AuthController extends Controller
                     $user->update([
                         'name'     => $request->name,
                         'email'    => $request->email,
-                        'password' => Hash::make($request->password),
+                        'password' => $request->password,
                     ]);
 
                     Log::info('register: user update done', [
@@ -193,7 +193,7 @@ class AuthController extends Controller
                         'uuid'     => (string) Str::uuid(),
                         'name'     => $request->name,
                         'email'    => $request->email,
-                        'password' => Hash::make($request->password),
+                        'password' => $request->password,
                     ]);
 
                     Log::info('register: new user created', [
@@ -207,11 +207,10 @@ class AuthController extends Controller
                     'device_id' => $request->device_id,
                 ]);
 
-                // TODO:一旦コメントアウト
                 // 同一 device_id の token を上書き
-                // $user->tokens()
-                //     ->where('name', $request->device_id)
-                //     ->delete();
+                $user->tokens()
+                    ->where('name', $request->device_id)
+                    ->delete();
 
                 Log::info('register: before createToken', [
                     'user_id' => $user->id,
