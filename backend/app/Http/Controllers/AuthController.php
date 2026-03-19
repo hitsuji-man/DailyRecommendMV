@@ -107,6 +107,14 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
+        DB::listen(function ($query) {
+            Log::info('register sql', [
+                'sql' => $query->sql,
+                'bindings' => $query->bindings,
+                'time_ms' => $query->time,
+            ]);
+        });
+
         Log::info('register: request start', [
             'email' => $request->email,
             'device_id' => $request->device_id,
@@ -122,127 +130,131 @@ class AuthController extends Controller
             'device_id' => ['required', 'uuid'],
         ]);
 
-        Log::info('register: validation passed', [
-            'email' => $request->email,
-            'device_id' => $request->device_id,
-        ]);
-
         try {
-            // 現在のユーザー(匿名 or null)
             $user = $request->user();
 
-            Log::info('register: transaction start', [
-                'has_user' => (bool) $user,
-                'user_id' => $user?->id,
-                'user_email' => $user?->email,
-            ]);
-
             if ($user) {
-                // 匿名ユーザー → 正規ユーザーに昇格
-                Log::info('register: upgrade anonymous user start', [
-                    'user_id' => $user->id,
-                    'before_email' => $user->email,
-                ]);
-
                 if ($user->email !== null) {
-                    Log::warning('register: already registered user tried register', [
-                        'user_id' => $user->id,
-                        'email' => $user->email,
-                    ]);
-
                     throw ValidationException::withMessages([
-                        'user'  => ['既に登録済みです'],
+                        'user' => ['既に登録済みです'],
                     ]);
                 }
 
-                Log::info('register: before user update', [
-                    'user_id' => $user->id,
-                    'new_email' => $request->email,
-                ]);
+                try {
+                    Log::info('step: user update start', ['user_id' => $user->id]);
 
-                $user->update([
-                    'name'     => $request->name,
-                    'email'    => $request->email,
-                    'password' => $request->password,
-                ]);
+                    $user->update([
+                        'name'     => $request->name,
+                        'email'    => $request->email,
+                        'password' => $request->password,
+                    ]);
 
-                Log::info('register: user update done', [
-                    'user_id' => $user->id,
-                ]);
+                    Log::info('step: user update ok', ['user_id' => $user->id]);
+                } catch (\Throwable $e) {
+                    Log::error('step: user update failed', [
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'user_id' => $user->id,
+                    ]);
+                    throw $e;
+                }
 
-                Log::info('register: before token delete by device_id', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
-                // 匿名トークンは全削除
-                $user->tokens()->delete();
+                try {
+                    Log::info('step: delete anonymous tokens start', ['user_id' => $user->id]);
 
-                Log::info('register: all tokens delete', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
+                    $user->tokens()->delete();
+
+                    Log::info('step: delete anonymous tokens ok', ['user_id' => $user->id]);
+                } catch (\Throwable $e) {
+                    Log::error('step: delete anonymous tokens failed', [
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'user_id' => $user->id,
+                    ]);
+                    throw $e;
+                }
             } else {
-                Log::info('register: create new user start', [
-                    'email' => $request->email,
-                ]);
+                try {
+                    Log::info('step: user create start', ['email' => $request->email]);
 
-                // 完全新規ユーザー作成
-                $user = User::create([
-                    'uuid'     => (string) Str::uuid(),
-                    'name'     => $request->name,
-                    'email'    => $request->email,
-                    'password' => $request->password,
-                ]);
+                    $user = User::create([
+                        'uuid'     => (string) Str::uuid(),
+                        'name'     => $request->name,
+                        'email'    => $request->email,
+                        'password' => $request->password,
+                    ]);
 
-                Log::info('register: new user created', [
-                    'user_id' => $user->id,
-                    'email' => $user->email,
-                ]);
+                    Log::info('step: user create ok', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                    ]);
+                } catch (\Throwable $e) {
+                    Log::error('step: user create failed', [
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'email' => $request->email,
+                    ]);
+                    throw $e;
+                }
             }
 
-            Log::info('register: before token delete by device_id for new user', [
-                'user_id' => $user->id,
-                'device_id' => $request->device_id,
-            ]);
+            try {
+                Log::info('step: delete device token start', [
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
 
-            // 同一 device_id の token を上書き
-            $user->tokens()
-                ->where('name', $request->device_id)
-                ->delete();
+                $user->tokens()
+                    ->where('name', $request->device_id)
+                    ->delete();
 
-            Log::info('register: before createToken', [
-                'user_id' => $user->id,
-                'device_id' => $request->device_id,
-            ]);
+                Log::info('step: delete device token ok', [
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
+            } catch (\Throwable $e) {
+                Log::error('step: delete device token failed', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
+                throw $e;
+            }
 
-            // 正規ユーザー用 token 発行
-            $token = $user->createToken(
-                $request->device_id,
-                ['user']
-            )->plainTextToken;
+            try {
+                Log::info('step: createToken start', [
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
 
-            Log::info('register: createToken done', [
-                'user_id' => $user->id,
-                'device_id' => $request->device_id,
-            ]);
+                $token = $user->createToken(
+                    $request->device_id,
+                    ['user']
+                )->plainTextToken;
 
-            // TODO:トランザクション消した際ならば不要
-            // // レスポンス用データを返す
-            // return [
-            //     'user'  => $user,
-            //     'token' => $token,
-            // ];
+                Log::info('step: createToken ok', [
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
+            } catch (\Throwable $e) {
+                Log::error('step: createToken failed', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'user_id' => $user->id,
+                    'device_id' => $request->device_id,
+                ]);
+                throw $e;
+            }
 
-
-            Log::info('register: success response', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-            ]);
-
-            // commit後にレスポンス
             return response()->json([
-                'token'  => $token,
-                'user'   => $user,
+                'token' => $token,
+                'user'  => $user,
             ], 201);
         } catch (\Throwable $e) {
             Log::error('register: failed', [
