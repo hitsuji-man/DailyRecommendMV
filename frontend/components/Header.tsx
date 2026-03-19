@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header className="flex justify-between p-4 bg-gray-800">
       <Link href="/" className="text-gray-100">
-        MyApp
+        TOP
       </Link>
       <nav className="flex gap-4">
         {!user ? (
