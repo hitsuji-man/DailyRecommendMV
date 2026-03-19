@@ -122,7 +122,6 @@ class AuthController extends Controller
             'auth_user_id' => $request->user()?->id,
         ]);
 
-        // バリデーション(トランザクション外)
         $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'email', 'unique:users,email'],
@@ -130,18 +129,45 @@ class AuthController extends Controller
             'device_id' => ['required', 'uuid'],
         ]);
 
+        Log::info('register: validation passed', [
+            'email' => $request->email,
+            'device_id' => $request->device_id,
+        ]);
+
         try {
-            $user = $request->user();
+            $result = DB::transaction(function () use ($request) {
+                $user = $request->user();
 
-            if ($user) {
-                if ($user->email !== null) {
-                    throw ValidationException::withMessages([
-                        'user' => ['既に登録済みです'],
+                Log::info('tx: start', [
+                    'has_user' => (bool) $user,
+                    'user_id' => $user?->id,
+                    'user_email' => $user?->email,
+                ]);
+
+                DB::select('select 1');
+                Log::info('tx: checkpoint 1 ok');
+
+                if ($user) {
+                    Log::info('tx: upgrade anonymous user start', [
+                        'user_id' => $user->id,
+                        'before_email' => $user->email,
                     ]);
-                }
 
-                try {
-                    Log::info('step: user update start', ['user_id' => $user->id]);
+                    if ($user->email !== null) {
+                        Log::warning('tx: already registered user tried register', [
+                            'user_id' => $user->id,
+                            'email' => $user->email,
+                        ]);
+
+                        throw ValidationException::withMessages([
+                            'user' => ['既に登録済みです'],
+                        ]);
+                    }
+
+                    Log::info('tx: before user update', [
+                        'user_id' => $user->id,
+                        'new_email' => $request->email,
+                    ]);
 
                     $user->update([
                         'name'     => $request->name,
@@ -149,35 +175,29 @@ class AuthController extends Controller
                         'password' => $request->password,
                     ]);
 
-                    Log::info('step: user update ok', ['user_id' => $user->id]);
-                } catch (\Throwable $e) {
-                    Log::error('step: user update failed', [
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
+                    Log::info('tx: after user update', [
                         'user_id' => $user->id,
                     ]);
-                    throw $e;
-                }
 
-                try {
-                    Log::info('step: delete anonymous tokens start', ['user_id' => $user->id]);
+                    DB::select('select 1');
+                    Log::info('tx: checkpoint 2 ok');
+
+                    Log::info('tx: before all anonymous tokens delete', [
+                        'user_id' => $user->id,
+                    ]);
 
                     $user->tokens()->delete();
 
-                    Log::info('step: delete anonymous tokens ok', ['user_id' => $user->id]);
-                } catch (\Throwable $e) {
-                    Log::error('step: delete anonymous tokens failed', [
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
+                    Log::info('tx: after all anonymous tokens delete', [
                         'user_id' => $user->id,
                     ]);
-                    throw $e;
-                }
-            } else {
-                try {
-                    Log::info('step: user create start', ['email' => $request->email]);
+
+                    DB::select('select 1');
+                    Log::info('tx: checkpoint 3 ok');
+                } else {
+                    Log::info('tx: before user create', [
+                        'email' => $request->email,
+                    ]);
 
                     $user = User::create([
                         'uuid'     => (string) Str::uuid(),
@@ -186,23 +206,16 @@ class AuthController extends Controller
                         'password' => $request->password,
                     ]);
 
-                    Log::info('step: user create ok', [
+                    Log::info('tx: after user create', [
                         'user_id' => $user->id,
                         'email' => $user->email,
                     ]);
-                } catch (\Throwable $e) {
-                    Log::error('step: user create failed', [
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
-                        'email' => $request->email,
-                    ]);
-                    throw $e;
-                }
-            }
 
-            try {
-                Log::info('step: delete device token start', [
+                    DB::select('select 1');
+                    Log::info('tx: checkpoint 4 ok');
+                }
+
+                Log::info('tx: before device token delete', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
@@ -211,23 +224,15 @@ class AuthController extends Controller
                     ->where('name', $request->device_id)
                     ->delete();
 
-                Log::info('step: delete device token ok', [
+                Log::info('tx: after device token delete', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
-            } catch (\Throwable $e) {
-                Log::error('step: delete device token failed', [
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
-                throw $e;
-            }
 
-            try {
-                Log::info('step: createToken start', [
+                DB::select('select 1');
+                Log::info('tx: checkpoint 5 ok');
+
+                Log::info('tx: before createToken', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
@@ -237,24 +242,28 @@ class AuthController extends Controller
                     ['user']
                 )->plainTextToken;
 
-                Log::info('step: createToken ok', [
+                Log::info('tx: after createToken', [
                     'user_id' => $user->id,
                     'device_id' => $request->device_id,
                 ]);
-            } catch (\Throwable $e) {
-                Log::error('step: createToken failed', [
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
-                throw $e;
-            }
+
+                DB::select('select 1');
+                Log::info('tx: checkpoint 6 ok');
+
+                return [
+                    'user'  => $user,
+                    'token' => $token,
+                ];
+            });
+
+            Log::info('register: transaction committed', [
+                'user_id' => $result['user']->id,
+                'email' => $result['user']->email,
+            ]);
 
             return response()->json([
-                'token' => $token,
-                'user'  => $user,
+                'token' => $result['token'],
+                'user'  => $result['user'],
             ], 201);
         } catch (\Throwable $e) {
             Log::error('register: failed', [
