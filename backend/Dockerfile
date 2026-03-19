@@ -13,16 +13,19 @@ RUN apk add --no-cache \
     pdo \
     pdo_pgsql \
     mbstring \
-    zip
+    zip \
+    bcmath
 
 COPY composer.json composer.lock ./
-# RUN composer install \
-#     --no-dev \
-#     --no-interaction \
-#     --no-progress \
-#     --prefer-dist \
-#     --optimize-autoloader
-RUN composer install -vvv || cat /tmp/* || true
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-scripts
+# ログ出力
+# RUN composer install -vvv || cat /tmp/* || true
 
 FROM node:20-alpine AS assets
 WORKDIR /app
@@ -54,7 +57,8 @@ RUN apk add --no-cache \
         pdo \
         pdo_pgsql \
         mbstring \
-        zip
+        zip \
+        bcmath
 
 # アプリ本体をコピー
 COPY . .
