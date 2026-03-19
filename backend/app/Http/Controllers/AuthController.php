@@ -107,21 +107,7 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        DB::listen(function ($query) {
-            Log::info('register sql', [
-                'sql' => $query->sql,
-                'bindings' => $query->bindings,
-                'time_ms' => $query->time,
-            ]);
-        });
-
-        Log::info('register: request start', [
-            'email' => $request->email,
-            'device_id' => $request->device_id,
-            'has_auth_user' => (bool) $request->user(),
-            'auth_user_id' => $request->user()?->id,
-        ]);
-
+        // バリデーション
         $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'email', 'unique:users,email'],
@@ -129,141 +115,51 @@ class AuthController extends Controller
             'device_id' => ['required', 'uuid'],
         ]);
 
-        Log::info('register: validation passed', [
-            'email' => $request->email,
-            'device_id' => $request->device_id,
-        ]);
-
         try {
-            $result = DB::transaction(function () use ($request) {
-                $user = $request->user();
+            // 現在のユーザー(匿名 or null)
+            $user = $request->user();
 
-                Log::info('tx: start', [
-                    'has_user' => (bool) $user,
-                    'user_id' => $user?->id,
-                    'user_email' => $user?->email,
-                ]);
-
-                DB::select('select 1');
-                Log::info('tx: checkpoint 1 ok');
-
-                if ($user) {
-                    Log::info('tx: upgrade anonymous user start', [
-                        'user_id' => $user->id,
-                        'before_email' => $user->email,
+            if ($user) {
+                // 匿名ユーザー → 正規ユーザーに昇格
+                if ($user->email !== null) {
+                    throw ValidationException::withMessages([
+                        'user'  => ['既に登録済みです'],
                     ]);
-
-                    if ($user->email !== null) {
-                        Log::warning('tx: already registered user tried register', [
-                            'user_id' => $user->id,
-                            'email' => $user->email,
-                        ]);
-
-                        throw ValidationException::withMessages([
-                            'user' => ['既に登録済みです'],
-                        ]);
-                    }
-
-                    Log::info('tx: before user update', [
-                        'user_id' => $user->id,
-                        'new_email' => $request->email,
-                    ]);
-
-                    $user->update([
-                        'name'     => $request->name,
-                        'email'    => $request->email,
-                        'password' => $request->password,
-                    ]);
-
-                    Log::info('tx: after user update', [
-                        'user_id' => $user->id,
-                    ]);
-
-                    DB::select('select 1');
-                    Log::info('tx: checkpoint 2 ok');
-
-                    Log::info('tx: before all anonymous tokens delete', [
-                        'user_id' => $user->id,
-                    ]);
-
-                    $user->tokens()->delete();
-
-                    Log::info('tx: after all anonymous tokens delete', [
-                        'user_id' => $user->id,
-                    ]);
-
-                    DB::select('select 1');
-                    Log::info('tx: checkpoint 3 ok');
-                } else {
-                    Log::info('tx: before user create', [
-                        'email' => $request->email,
-                    ]);
-
-                    $user = User::create([
-                        'uuid'     => (string) Str::uuid(),
-                        'name'     => $request->name,
-                        'email'    => $request->email,
-                        'password' => $request->password,
-                    ]);
-
-                    Log::info('tx: after user create', [
-                        'user_id' => $user->id,
-                        'email' => $user->email,
-                    ]);
-
-                    DB::select('select 1');
-                    Log::info('tx: checkpoint 4 ok');
                 }
 
-                Log::info('tx: before device token delete', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
+                $user->update([
+                    'name'     => $request->name,
+                    'email'    => $request->email,
+                    'password' => $request->password,
                 ]);
 
-                $user->tokens()
-                    ->where('name', $request->device_id)
-                    ->delete();
-
-                Log::info('tx: after device token delete', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
+                // 匿名トークンは全削除
+                $user->tokens()->delete();
+            } else {
+                // 完全新規ユーザー作成
+                $user = User::create([
+                    'uuid'     => (string) Str::uuid(),
+                    'name'     => $request->name,
+                    'email'    => $request->email,
+                    'password' => $request->password,
                 ]);
+            }
 
-                DB::select('select 1');
-                Log::info('tx: checkpoint 5 ok');
+            // 同一 device_id の token を上書き
+            $user->tokens()
+                ->where('name', $request->device_id)
+                ->delete();
 
-                Log::info('tx: before createToken', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
+            // 正規ユーザー用 token 発行
+            $token = $user->createToken(
+                $request->device_id,
+                ['user']
+            )->plainTextToken;
 
-                $token = $user->createToken(
-                    $request->device_id,
-                    ['user']
-                )->plainTextToken;
-
-                Log::info('tx: after createToken', [
-                    'user_id' => $user->id,
-                    'device_id' => $request->device_id,
-                ]);
-
-                DB::select('select 1');
-                Log::info('tx: checkpoint 6 ok');
-
-                return [
-                    'user'  => $user,
-                    'token' => $token,
-                ];
-            });
-
-            Log::info('register: transaction committed', [
-                'user_id' => $result['user']->id,
-                'email' => $result['user']->email,
-            ]);
-
+            // レスポンス
             return response()->json([
-                'token' => $result['token'],
-                'user'  => $result['user'],
+                'token'  => $token,
+                'user'   => $user,
             ], 201);
         } catch (\Throwable $e) {
             Log::error('register: failed', [
