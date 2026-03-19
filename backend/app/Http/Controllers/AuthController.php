@@ -207,10 +207,11 @@ class AuthController extends Controller
                     'device_id' => $request->device_id,
                 ]);
 
+                // TODO:一旦コメントアウト
                 // 同一 device_id の token を上書き
-                $user->tokens()
-                    ->where('name', $request->device_id)
-                    ->delete();
+                // $user->tokens()
+                //     ->where('name', $request->device_id)
+                //     ->delete();
 
                 Log::info('register: before createToken', [
                     'user_id' => $user->id,
