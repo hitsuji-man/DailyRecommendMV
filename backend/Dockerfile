@@ -16,12 +16,13 @@ RUN apk add --no-cache \
     zip
 
 COPY composer.json composer.lock ./
-RUN composer install \
-    --no-dev \
-    --no-interaction \
-    --no-progress \
-    --prefer-dist \
-    --optimize-autoloader
+# RUN composer install \
+#     --no-dev \
+#     --no-interaction \
+#     --no-progress \
+#     --prefer-dist \
+#     --optimize-autoloader
+RUN composer install -vvv
 
 FROM node:20-alpine AS assets
 WORKDIR /app
