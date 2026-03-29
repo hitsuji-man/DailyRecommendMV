@@ -13,7 +13,7 @@ export default function UserPage() {
   const { user, loading: authLoading } = useRequireAuth();
   const { refetchUser } = useAuthContext();
 
-  // TODO:表示ローディング（派生状態）
+  // 表示ローディング（派生状態）
   if (authLoading) {
     return <p className="p-6 text-center">読み込み中...</p>;
   }
