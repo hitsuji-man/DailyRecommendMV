@@ -57,7 +57,7 @@ export default function Header() {
   );
 
   return (
-    <header className="relative flex items-center justify-between p-4 bg-gray-800">
+    <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between p-4 bg-gray-800 md:sticky">
       <Link href="/" className="text-gray-100">
         TOP
       </Link>
@@ -75,7 +75,7 @@ export default function Header() {
         </button>
       </div>
       <nav
-        className={`fixed right-0 top-[72px] z-10 w-[45vw] min-w-44 max-w-64 flex-col gap-5 bg-gray-800/90 p-5 shadow-lg backdrop-blur-sm md:hidden ${
+        className={`absolute right-0 top-full z-10 w-[45vw] min-w-44 max-w-64 flex-col gap-5 bg-gray-800/90 p-5 shadow-lg backdrop-blur-sm md:hidden ${
           isMenuOpen ? "flex" : "hidden"
         }`}
       >
