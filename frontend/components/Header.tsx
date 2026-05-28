@@ -75,7 +75,7 @@ export default function Header() {
         </button>
       </div>
       <nav
-        className={`absolute right-4 top-full z-10 mt-2 min-w-44 flex-col gap-3 rounded-md bg-gray-800 p-4 shadow-lg md:hidden ${
+        className={`fixed right-0 top-[72px] z-10 w-[45vw] min-w-44 max-w-64 flex-col gap-5 bg-gray-800/90 p-5 shadow-lg backdrop-blur-sm md:hidden ${
           isMenuOpen ? "flex" : "hidden"
         }`}
       >
