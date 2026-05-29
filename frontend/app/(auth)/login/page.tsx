@@ -13,10 +13,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [guestSubmitting, setGuestSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { user, loading: authLoading, login } = useAuthContext();
+  const { user, loading: authLoading, login, anonymousLogin } = useAuthContext();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -31,7 +32,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || guestSubmitting) return;
 
     setSubmitting(true);
     setError(null);
@@ -58,8 +59,39 @@ export default function LoginPage() {
     }
   };
 
+  const handleAnonymousLogin = async () => {
+    if (submitting || guestSubmitting) return;
+
+    setGuestSubmitting(true);
+    setError(null);
+
+    try {
+      await anonymousLogin();
+      router.push("/");
+    } catch {
+      setError("ゲストログインに失敗しました");
+    } finally {
+      setGuestSubmitting(false);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-sm mt-16">
+      <section className="mb-8">
+        <h1 className="text-xl font-bold mb-2">ゲストでログイン</h1>
+        <p className="text-sm text-gray-600 mb-4">
+          ワンクリックでゲストユーザーとしてログインできます。メールアドレスとパスワードでの登録不要です。
+        </p>
+        <button
+          type="button"
+          onClick={handleAnonymousLogin}
+          disabled={submitting || guestSubmitting}
+          className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 disabled:opacity-50"
+        >
+          {guestSubmitting ? "ログイン中…" : "ゲストでログイン"}
+        </button>
+      </section>
+
       <h1 className="text-xl font-bold mb-6">ログイン</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -102,7 +134,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || guestSubmitting}
           className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 disabled:opacity-50"
         >
           {submitting ? "ログイン中…" : "ログイン"}
