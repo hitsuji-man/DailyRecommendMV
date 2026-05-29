@@ -9,18 +9,12 @@ import { useAuthContext } from "@/context/AuthContext";
 export default function Header() {
   // authVersionは未使用。購読のみ
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user, authVersion, loading, logout, isLoggingOut, anonymousLogin } =
-    useAuthContext();
+  const { user, authVersion, loading, logout, isLoggingOut } = useAuthContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   if (loading) return null; // or skeleton
 
   const closeMenu = () => setIsMenuOpen(false);
-
-  const handleAnonymousLogin = () => {
-    closeMenu();
-    anonymousLogin();
-  };
 
   const handleLogout = () => {
     closeMenu();
@@ -29,12 +23,6 @@ export default function Header() {
 
   const navItems = !user ? (
     <>
-      <button
-        onClick={handleAnonymousLogin}
-        className="p-0 text-left text-gray-100 cursor-pointer"
-      >
-        ゲストでログイン
-      </button>
       <Link href="/login" onClick={closeMenu} className="text-gray-100">
         ログイン
       </Link>
