@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useAuthContext } from "@/context/AuthContext";
@@ -57,9 +58,16 @@ export default function Header() {
   );
 
   return (
-    <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between p-4 bg-gray-800 md:sticky">
-      <Link href="/" className="text-gray-100">
-        TOP
+    <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-1 bg-gray-800 md:sticky">
+      <Link href="/" aria-label="トップ画面へ" className="flex items-center">
+        <Image
+          src="/logo.svg"
+          alt="日替わりおすすめMV再生アプリ"
+          width={40}
+          height={40}
+          className="h-15 w-15 object-contain"
+          priority
+        />
       </Link>
       <nav className="hidden gap-4 md:flex">{navItems}</nav>
       <div className="md:hidden">
