@@ -18,10 +18,12 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [guestSubmitting, setGuestSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { user, loading: authLoading, register } = useAuthContext();
+  const { user, loading: authLoading, register, anonymousLogin } =
+    useAuthContext();
 
   // 既に正規ユーザーならトップへ
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || guestSubmitting) return;
 
     setSubmitting(true);
     setError(null);
@@ -72,8 +74,39 @@ export default function RegisterPage() {
     }
   };
 
+  const handleAnonymousLogin = async () => {
+    if (submitting || guestSubmitting) return;
+
+    setGuestSubmitting(true);
+    setError(null);
+
+    try {
+      await anonymousLogin();
+      router.push("/");
+    } catch {
+      setError("ゲスト利用に失敗しました");
+    } finally {
+      setGuestSubmitting(false);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-sm mt-16">
+      <section className="mb-8">
+        <h1 className="text-xl font-bold mb-2">ゲストユーザーで利用する</h1>
+        <p className="text-sm text-gray-600 mb-4">
+          ワンクリックでゲストユーザーとして利用できます。メールアドレスとパスワードでの登録不要です。
+        </p>
+        <button
+          type="button"
+          onClick={handleAnonymousLogin}
+          disabled={submitting || guestSubmitting}
+          className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 disabled:opacity-50"
+        >
+          {guestSubmitting ? "利用開始中…" : "ゲストで利用"}
+        </button>
+      </section>
+
       <h1 className="text-xl font-bold mb-6">ユーザー登録</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -128,7 +161,7 @@ export default function RegisterPage() {
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || guestSubmitting}
           className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 disabled:opacity-50"
         >
           {submitting ? "登録中…" : "登録する"}
