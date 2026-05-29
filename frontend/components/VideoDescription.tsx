@@ -12,7 +12,7 @@ export default function VideoDescription({ description }: Props) {
   return (
     <div className="mt-4">
       <p
-        className={`text-sm text-gray-700 whitespace-pre-line transition-all ${
+        className={`text-sm text-gray-700 whitespace-pre-line break-words transition-all ${
           expanded ? "" : "line-clamp-3"
         }`}
       >
