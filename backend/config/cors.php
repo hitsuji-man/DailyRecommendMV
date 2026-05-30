@@ -5,7 +5,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_ORIGIN'),'http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.40.215:3000'],
+    'allowed_origins' => [
+        ...array_filter(array_map('trim', explode(',', env('FRONTEND_ORIGIN', '')))),
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://192.168.40.215:3000'
+    ],
 
     'allowed_headers' => ['*'],
 
