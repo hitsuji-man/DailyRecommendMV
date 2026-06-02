@@ -17,7 +17,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { user, loading: authLoading, login, anonymousLogin } = useAuthContext();
+  const {
+    user,
+    loading: authLoading,
+    login,
+    anonymousLogin,
+  } = useAuthContext();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -76,7 +81,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-sm mt-16">
+    <div className="mx-auto max-w-sm px-3 mt-16">
       <section className="mb-8">
         <h1 className="text-xl font-bold mb-2">ゲストでログイン</h1>
         <p className="text-sm text-gray-600 mb-4">
