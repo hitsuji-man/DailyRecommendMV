@@ -49,7 +49,7 @@ export default function Header() {
     <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-1 bg-gray-800 md:sticky">
       <Link href="/" aria-label="トップ画面へ" className="flex items-center">
         <Image
-          src="/logo.svg"
+          src="/logo.png"
           alt="日替わりおすすめMV再生アプリ"
           width={40}
           height={40}
