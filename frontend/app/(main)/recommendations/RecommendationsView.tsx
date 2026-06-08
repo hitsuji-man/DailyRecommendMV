@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Recommendation } from "@/types/Recommendation";
+import { Video } from "@/types/Video";
 import Image from "next/image";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 import HorizontalVideoList from "@/components/HorizontalVideoList";
@@ -15,33 +16,51 @@ type RecommendationResponse = {
 };
 
 type MixedDailyResponse = {
-  data: Recommendation[];
+  data: Video[];
 };
 
 export default function RecommendationsView() {
   const [recommendation, setRecommendation] = useState<Recommendation | null>(
     null,
   );
-  const [mixedDailyVideos, setMixedDailyVideos] = useState<Recommendation[]>(
-    [],
-  );
+  const [mixedDailyVideos, setMixedDailyVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { loading: authLoading, authVersion } = useAuthContext();
 
   useEffect(() => {
     if (authLoading) return;
 
     const fetchData = async () => {
+      setLoading(true);
+      setErrorMessage(null);
+
       try {
-        const [todayRes, mixedRes] = await Promise.all([
-          api.get<RecommendationResponse>("/recommendations/today"),
-          api.get<MixedDailyResponse>("/videos/mixed-daily"),
-        ]);
+        const todayRes = await api.get<RecommendationResponse>(
+          "/recommendations/today",
+        );
 
         setRecommendation(todayRes.data.data);
-        setMixedDailyVideos(mixedRes.data.data);
       } catch (e) {
         console.error("Failed to fetch recommendations", e);
+        setRecommendation(null);
+        setErrorMessage(
+          "おすすめMVを取得できませんでした。バックエンドAPIが起動しているか確認してください。",
+        );
+        return;
+      } finally {
+        setLoading(false);
+      }
+
+      try {
+        const mixedRes = await api.get<MixedDailyResponse>(
+          "/videos/mixed-daily",
+        );
+
+        setMixedDailyVideos(mixedRes.data.data);
+      } catch (e) {
+        console.error("Failed to fetch mixed daily videos", e);
+        setMixedDailyVideos([]);
       } finally {
         setLoading(false);
       }
@@ -51,6 +70,10 @@ export default function RecommendationsView() {
   }, [authVersion, authLoading]);
 
   if (loading || !recommendation) {
+    if (errorMessage) {
+      return <p className="p-6 text-center text-red-600">{errorMessage}</p>;
+    }
+
     return <p className="p-6 text-center">読み込み中...</p>;
   }
 
@@ -128,7 +151,13 @@ export default function RecommendationsView() {
       <div className="mt-10 max-w-5xl mx-auto">
         <h2 className="text-lg font-semibold mb-4">関連動画一覧</h2>
 
-        <HorizontalVideoList videos={mixedDailyVideos} />
+        {mixedDailyVideos.length > 0 ? (
+          <HorizontalVideoList videos={mixedDailyVideos} />
+        ) : (
+          <p className="text-sm text-gray-500">
+            関連動画を取得できませんでした。
+          </p>
+        )}
       </div>
 
       {/* ログイン時のみ表示するボタン(おすすめMV履歴、お気に入り一覧、視聴履歴) */}
