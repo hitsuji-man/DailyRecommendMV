@@ -17,13 +17,15 @@ export default function HistoryItem({ history, onDelete }: Props) {
         className="flex gap-4 flex-1 min-w-0"
       >
         {/* サムネイル */}
-        <Image
-          src={history.thumbnail.url}
-          alt={history.title}
-          width={160}
-          height={90}
-          className="rounded-md flex-shrink-0"
-        />
+        <div className="relative w-40 aspect-video flex-shrink-0">
+          <Image
+            src={history.thumbnail.url}
+            alt={history.title}
+            fill
+            sizes="160px"
+            className="object-cover rounded-md"
+          />
+        </div>
 
         {/* 動画情報（サムネ右側に縦並び） */}
         <div className="flex flex-col gap-1 overflow-hidden">

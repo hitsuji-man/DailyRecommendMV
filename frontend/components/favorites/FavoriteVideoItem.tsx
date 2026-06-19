@@ -15,13 +15,15 @@ export default function FavoriteVideoItem({ video, onUnfavorite }: Props) {
       {/* 左カラム：サムネイル + いいね */}
       <div className="flex flex-col items-start gap-2 shrink-0">
         <Link href={`/videos/${video.videoDbId}`}>
-          <Image
-            src={video.thumbnail.url}
-            alt={video.title}
-            width={160}
-            height={90}
-            className="rounded-md"
-          />
+          <div className="relative w-40 aspect-video">
+            <Image
+              src={video.thumbnail.url}
+              alt={video.title}
+              fill
+              sizes="160px"
+              className="object-cover rounded-md"
+            />
+          </div>
         </Link>
 
         {/* サムネ直下のいいね */}

@@ -15,13 +15,13 @@ export default function RecommendationCard({ recommendation }: Props) {
       <Link href={`/videos/${recommendation.videoDbId}`}>
         <li key={recommendation.id} className="flex gap-3 items-start">
           {/* サムネイル */}
-          <div className="flex-shrink-0">
+          <div className="relative w-40 aspect-video flex-shrink-0 mb-2">
             <Image
               src={recommendation.thumbnail.url}
               alt={recommendation.title}
-              width={160}
-              height={90}
-              className="rounded-md mb-2"
+              fill
+              sizes="160px"
+              className="object-cover rounded-md"
             />
           </div>
           {/* タイトル + チャンネル名 + 視聴回数 + 投稿日時 */}
