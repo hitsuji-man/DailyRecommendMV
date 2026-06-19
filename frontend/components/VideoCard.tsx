@@ -16,8 +16,8 @@ export default function VideoCard({ video }: Props) {
           src={video.thumbnail.url}
           alt={video.title}
           width={320}
-          height={180}
-          className="rounded-md mb-2"
+          height={240}
+          className="w-[320px] h-[240px] object-cover rounded-md mb-2"
         />
 
         {/* タイトル */}

@@ -83,7 +83,7 @@ export default function VideoDetailView({ videoId }: { videoId: string }) {
             alt={video.channelTitle}
             width={40}
             height={40}
-            className="rounded-full object-cover shrink-0"
+            className="w-10 h-10 rounded-full object-cover shrink-0"
           />
           {/* チャンネル名 + 視聴回数 + 投稿日時 */}
           <div className="flex flex-col min-w-0">

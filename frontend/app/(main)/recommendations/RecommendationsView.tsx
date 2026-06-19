@@ -118,7 +118,7 @@ export default function RecommendationsView() {
                 alt={recommendation.channelTitle}
                 width={36}
                 height={36}
-                className="rounded-full object-cover shrink-0"
+                className="w-9 h-9 rounded-full object-cover shrink-0"
               />
               {/* チャンネル名 + 視聴回数 + 投稿日時 */}
               <div className="flex flex-col min-w-0">
