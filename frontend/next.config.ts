@@ -29,6 +29,8 @@ const csp = `
 `;
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["192.168.40.213"],
+
   images: {
     remotePatterns: [
       {
