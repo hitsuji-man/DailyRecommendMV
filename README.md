@@ -6,8 +6,16 @@ YouTubeの音楽トレンドとプレイリストから候補を自動収集し�
 
 選択肢を増やすのではなく、あえて1本に絞ることで「何を観ようか迷う時間」を減らし、偶然の音楽との出会いをつくります。
 
+## デモ
+
+今日のおすすめMVを起点に動画を閲覧し、お気に入りへ保存するまでの操作例です。
+
 <p align="center">
-  <img src="frontend/public/logo.png" alt="Daily Recommend MV ロゴ" width="180">
+  <img
+    src="documents/demo2.gif"
+    alt="Daily Recommend MV 操作デモ"
+    width="900"
+  >
 </p>
 
 ## このプロジェクトで実現したこと
