@@ -12,7 +12,7 @@ YouTubeの音楽トレンドとプレイリストから候補を自動収集し�
 
 <p align="center">
   <img
-    src="documents/demo2.gif"
+    src="documents/demo2-optimized.gif"
     alt="Daily Recommend MV 操作デモ"
     width="900"
   >
