@@ -239,7 +239,7 @@ php artisan schedule:work
 | `GET` | `/favorites` | お気に入り一覧 | 必要 |
 | `POST` | `/favorites/{id}` | お気に入り登録 | 必要 |
 | `DELETE` | `/favorites/{id}` | お気に入り解除 | 必要 |
-| `POST` | `/anonymous-login` | 匿名ログイン | 不要 |
+| `POST` | `/anonymous-login` | ゲストでログイン | 不要 |
 | `POST` | `/register` | 会員登録 | 任意 |
 | `POST` | `/login` | ログイン | 不要 |
 | `POST` | `/logout` | ログアウト | 必要 |
