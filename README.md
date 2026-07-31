@@ -240,6 +240,8 @@ php artisan schedule:work
 
 ## データモデル
 
+主要カラムとリレーションに絞る
+
 ```mermaid
 erDiagram
     USERS ||--o{ USER_HISTORIES : views
@@ -285,6 +287,8 @@ erDiagram
         bigint video_id FK
     }
 ```
+
+> このER図はリレーションと主要カラムを把握しやすくするため、一部のカラムを省略しています。詳細な要件上の定義は要件定義書、実際の物理スキーマはLaravelのマイグレーションを参照してください。
 
 ## 今後の展望
 
