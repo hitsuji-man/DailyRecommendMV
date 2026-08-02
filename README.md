@@ -147,7 +147,7 @@ DailyRecommendMV/
 ### 1. リポジトリを取得
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/hitsuji-man/DailyRecommendMV
 cd DailyRecommendMV
 ```
 
