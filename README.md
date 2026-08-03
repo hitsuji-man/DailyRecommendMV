@@ -99,7 +99,7 @@ sequenceDiagram
     Note over Laravel,DB: 当日の初回アクセス時に<br>直近7日を除外して1本を確定
 ```
 
-画面構成の詳細は[画面遷移図](documents/画面遷移図-v9.png)、仕様は[要件定義書](documents/要件定義書.md)をご覧ください。
+画面構成の詳細は[画面遷移図](documents/画面遷移図-v10.png)、仕様は[要件定義書](documents/要件定義書.md)をご覧ください。
 
 ## 技術スタック
 
