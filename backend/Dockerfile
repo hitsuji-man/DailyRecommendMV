@@ -1,9 +1,10 @@
 # ---------- base ----------
-FROM php:8.2-cli-alpine AS base
+FROM php:8.2.35-cli-alpine AS base
 
 WORKDIR /var/www/html
 
-RUN apk add --no-cache \
+RUN apk upgrade --no-cache \
+ && apk add --no-cache \
     bash \
     curl \
     git \
